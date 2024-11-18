@@ -83,7 +83,9 @@ export default function AddSchedule() {
             </View>
 
             {/* 완료 버튼 */}
-            <TouchableOpacity style={styles.completeButton} onPress={() => router.push("/schedule/sending_schedule")}>
+            <TouchableOpacity style={styles.completeButton} 
+            onPress={() => router.push("/schedule/sending_schedule")}
+            >
               <Text style={styles.completeButtonText}>완료</Text>
             </TouchableOpacity>
           </View>
