@@ -1,11 +1,23 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from "react-native";
 import PlusBtn from "@/assets/images/icons/plus_button.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
+import CheckSchedule from "@/app/schedule/check_schedule";
+
+// 일정 항목의 타입 정의
+interface ScheduleItem {
+  id: number;
+  title: string;
+  date: string;
+  registrant: string;
+  memo?: string; // 메모는 선택적으로 포함
+}
 
 export default function Schedule() {
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleItem | null>(null); // 선택된 일정
+  const [modalVisible, setModalVisible] = useState(false);
   // 임시 데이터
   const schedules = [
       { id: 1, title: "일정명1", date: "24.11.19", registrant: "고래"},
@@ -14,6 +26,16 @@ export default function Schedule() {
       { id: 4, title: "일정명4", date: "24.12.10", registrant: "물고기"},
   ];
   const router = useRouter();
+
+  const openModal = (schedule: ScheduleItem) => {
+    setSelectedSchedule(schedule);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedSchedule(null);
+  };
 
   // 현재 날짜 가져오기
   const today = new Date();
@@ -44,40 +66,46 @@ export default function Schedule() {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {schedules.map((schedule) => (
-            <View key={schedule.id} style={styles.scheduleItem}>
-                <View style={styles.scheduleInfo}>
-                    <View style={styles.iconCircle}></View>
-                    <View>
-                        <Text style={styles.scheduleTitle} numberOfLines={1}>
-                            {schedule.title}
-                        </Text>
-                        <Text style={styles.scheduleDetails}>
-                            {schedule.date} {schedule.registrant}
-                        </Text>
-                    </View>
+          <TouchableOpacity key={schedule.id} onPress={() => openModal(schedule)}>
+            <View style={styles.scheduleItem}>
+              <View style={styles.scheduleInfo}>
+                <View style={styles.iconCircle}></View>
+                <View>
+                  <Text style={styles.scheduleTitle} numberOfLines={1}>
+                    {schedule.title}
+                  </Text>
+                  <Text style={styles.scheduleDetails}>
+                    {schedule.date} {schedule.registrant}
+                  </Text>
                 </View>
-                <View style={styles.rightSection}>
-                  <View
-                    style={styles.dDayCircle}
+              </View>
+              <View style={styles.rightSection}>
+                <View style={styles.dDayCircle}>
+                  <Text
+                    style={[
+                      styles.dDayText,
+                      calculateDDay(schedule.date) === "D-Day" && styles.dDayTextHighlight,
+                    ]}
                   >
-                     <Text
-                        style={[
-                          styles.dDayText,
-                          calculateDDay(schedule.date) === "D-Day" && styles.dDayTextHighlight,
-                        ]}
-                      >
-                        {calculateDDay(schedule.date)}
-                      </Text>
-                  </View>
-                  <RightArrow width={4.5} height={9} />
+                    {calculateDDay(schedule.date)}
+                  </Text>
                 </View>
+                <RightArrow width={4.5} height={9} />
+              </View>
             </View>
+          </TouchableOpacity>
         ))}
         <TouchableOpacity style={styles.addButton} onPress={() => router.push("/schedule/add_schedule")}>
           <PlusBtn width={52} height={52} />
         </TouchableOpacity>
       </ScrollView>
-          
+      <Modal visible={modalVisible} transparent={true} animationType="slide">
+        <CheckSchedule
+          schedule={selectedSchedule}
+          onClose={closeModal}
+          calculateDDay={calculateDDay} // D-Day 계산 함수 전달
+        />
+      </Modal>
     </View>
   );
 }
