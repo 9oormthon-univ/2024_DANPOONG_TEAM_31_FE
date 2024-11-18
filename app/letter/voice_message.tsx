@@ -130,6 +130,11 @@ export default function VoiceMessage() {
         };
     }, [playbackInstance]);
 
+    const handleSendLetter = () => {
+        // SendingLetter 화면으로 이동
+        router.push("/letter/sending_letter");
+    };
+
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.leftArrow} onPress={() => router.back()}>
@@ -166,7 +171,7 @@ export default function VoiceMessage() {
             {/* 하단 바 */}
             <View style={styles.bottomBar}>
                 <Text style={styles.recordingTimeText}>{recordingTime}</Text>
-                <TouchableOpacity style={styles.enterButton}>
+                <TouchableOpacity style={styles.enterButton} onPress={handleSendLetter}>
                     <EnterButton width={52} height={52} />
                 </TouchableOpacity>
             </View>

@@ -24,7 +24,7 @@ export default function Select() {
                 </TouchableOpacity>
 
                 {/* 텍스트 버튼 */}
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={() => router.push("/letter/text_message")}>
                     <ImgTextBtn width={103} height={103} />
                     <Text style={styles.buttonText}>텍스트</Text>
                 </TouchableOpacity>

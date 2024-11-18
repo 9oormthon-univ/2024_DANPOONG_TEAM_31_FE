@@ -1,39 +1,114 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Image } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import EditBtn from "@/assets/images/icons/black_edit_btn.svg";
-import Image from "@/assets/images/icons/image.svg";
+import EmptyImage from "@/assets/images/icons/image.svg";
 import PlusBtn from "@/assets/images/icons/black_plus_btn.svg";
 import EnterButton from "@/assets/images/icons/darkblue_enter.svg";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
 
 export default function TextMessage() {
+    const [message, setMessage] = useState(""); // 텍스트 입력값 관리
+    const [statusText, setStatusText] = useState("작성전"); // 상태 텍스트 관리
+    const [selectedImage, setSelectedImage] = useState<string | null>(null); // 선택된 이미지 URI
+    const router = useRouter();
+
+    const handleInputChange = (text: string) => {
+        setMessage(text);
+        if (text.trim() === "") {
+            setStatusText("작성전");
+        } else {
+            setStatusText("작성중");
+        }
+    };
+
+    const handleComplete = () => {
+        if (message.trim() !== "") {
+            setStatusText("작성완료");
+        }
+    };
+
+    const pickImage = async () => {
+        // 사진첩 접근 권한 요청
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!permissionResult.granted) {
+            alert("사진첩 접근 권한이 필요합니다.");
+            return;
+        }
+
+        // 사진첩에서 이미지 선택
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled && result.assets?.length > 0) {
+            setSelectedImage(result.assets[0].uri); // 선택된 이미지 URI 저장
+        }
+    };
+
+    const handleSendLetter = () => {
+        // SendingLetter 화면으로 이동
+        router.push("/letter/sending_letter");
+    };
 
     return (
         <View style={styles.container}>
-            {/* 상단 메제지 바 */}
+            {/* 상단 메세지 바 */}
             <View style={styles.messageBar}>
-                <View style={styles.EditBtnContainer}>
+                <View style={styles.editBtnContainer}>
                     <EditBtn width={24} height={24} />
                 </View>
-                <Text style={styles.editText}>메세지를 작성해 주세요.</Text>
+                <TextInput
+                    style={styles.messageInput}
+                    placeholder="메세지를 작성해 주세요."
+                    placeholderTextColor={colors.white}
+                    value={message}
+                    onChangeText={handleInputChange}
+                    onSubmitEditing={handleComplete}
+                />
+                <View style={styles.statusContainer}>
+                    <Text style={styles.statusText}>{statusText}</Text>
+                </View>
             </View>
 
             {/* 중간 이미지 바 */}
             <View style={styles.imageBar}>
-                <View style={styles.imageContainer}>
-                    <Image width={21} height={21}/>
+                <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
+                    {selectedImage ? (
+                        <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+                    ) : (
+                        <EmptyImage width={21} height={21} />
+                    )}
+                </TouchableOpacity>
+                <View style={styles.imageTextContainer}>
+                    <Text style={styles.imageText}>원하시는 이미지를 추가하세요.</Text>
+                    <TouchableOpacity style={styles.completeButton}>
+                        <Text style={styles.completeButtonText}>완료</Text>
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.imageText}>원하시는 이미지를 추가하세요.</Text>
             </View>
+
+            {/* 태그 리스트 */}
+            {/* 이거 고정 메세지 인가 혹은 랜덤 메세지 인가에 따라 스타일 변경 예정 */}
+            <ScrollView horizontal style={styles.tagScroll}>
+                {["고생했어", "파이팅", "오늘 하루도 고생 많았다", "힘들었지", "항상 응원해"].map((tag, index) => (
+                    <View key={index} style={styles.tagContainer}>
+                        <Text style={styles.tagText}>{tag}</Text>
+                    </View>
+                ))}
+                <TouchableOpacity style={styles.addTagButton}>
+                    <PlusBtn width={24} height={24} />
+                </TouchableOpacity>
+            </ScrollView>
 
             {/* 하단 바 */}
             <View style={styles.bottomBar}>
-                <View style={styles.exTextContainer}>
-
-                </View>
                 <Text style={styles.sendText}>편지 전달하기</Text>
-                <TouchableOpacity style={styles.enterButton}>
+                <TouchableOpacity style={styles.enterButton} onPress={handleSendLetter}>
                     <EnterButton width={52} height={52} />
                 </TouchableOpacity>
             </View>
@@ -50,27 +125,121 @@ const styles = StyleSheet.create({
         position: "relative",
     },
     messageBar: {
+        flexDirection: "row",
+        alignItems: "center",
         backgroundColor: colors.blue_gray_55,
+        borderRadius: 30,
+        width: 353,
+        height: 66,
+        marginTop: 162,
     },
-    EditBtnContainer: {
+    editBtnContainer: {
         backgroundColor: colors.blue_lightgray_FF,
-        borderRadius: "50%",
+        borderRadius: 50,
+        width: 40,
+        height: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        marginLeft: 16,
     },
-    editText: {
-        fontWeight: '700',
-        color: colors.white,
+    messageInput: {
+        flex: 1,
         fontSize: 16,
+        fontWeight: "500",
+        color: colors.white,
+        marginLeft: 15,
+    },
+    statusContainer: {
+        height: 25,
+        width: 54,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: colors.blue_lightgray_FF,
+        borderRadius: 20,
+        marginRight: 17,
+    },
+    statusText: {
+        fontSize: 11,
+        color: colors.blue_gray_46,
+        fontWeight: '700',
     },
     imageBar: {
         backgroundColor: colors.blue_gray_55,
+        borderRadius: 30,
+        width: 353,
+        height: 226,
+        marginTop: 15,
+        position: "relative",
     },
     imageContainer: {
-        backgroundColor: "F5F5F5",
+        alignItems: "center",
+        alignSelf: "center",
+        justifyContent: "center",
+        backgroundColor: "#F5F5F5",
+        borderRadius: 30,
+        height: 135,
+        width: 334,
+        marginTop: 21,
+    },
+    selectedImage: {
+        width: "100%",
+        height: "100%",
+        borderRadius: 30,
+    },
+    imageTextContainer: {
+        flexDirection: "row",
     },
     imageText: {
-        fontWeight: '400',
         fontSize: 16,
-        color: "CACACA",
+        fontWeight: "400",
+        color: "#CACACA",
+        position: "absolute",
+        top: 27,
+        left: 19,
+    },
+    completeButton: {
+        backgroundColor: colors.light_yellow,
+        borderRadius: 20,
+        width: 68,
+        height: 35,
+        justifyContent: "center",
+        alignItems: "center",
+        position: "absolute",
+        top: 15,
+        left: 275,
+    },
+    completeButtonText: {
+        fontSize: 16,
+        fontWeight: "600",
+        color: colors.blue_gray_55,
+    },
+    tagScroll: {
+        flexDirection: "row",
+        marginTop: 180,
+        marginLeft: 10,
+    },
+    tagContainer: {
+        borderWidth: 1,
+        borderColor: colors.white,
+        borderRadius: 26,
+        height: 35,
+        marginRight: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 26,
+    },
+    tagText: {
+        fontSize: 12,
+        fontWeight: "700",
+        color: colors.white,
+    },
+    addTagButton: {
+        backgroundColor: colors.white,
+        borderRadius: 50,
+        height: 35,
+        width: 35,
+        justifyContent: "center",
+        alignItems: "center",
     },
     bottomBar: {
         width: 353,
@@ -81,9 +250,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         position: "absolute",
         top: 695,
-    },
-    exTextContainer: {
-
     },
     sendText: {
         fontSize: 16,
