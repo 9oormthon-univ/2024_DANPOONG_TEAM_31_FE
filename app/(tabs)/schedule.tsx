@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-nati
 import PlusBtn from "@/assets/images/icons/plus_button.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import colors from "@/constants/colors";
+import { useRouter } from "expo-router";
 
 export default function Schedule() {
   // 임시 데이터
@@ -12,6 +13,7 @@ export default function Schedule() {
       { id: 3, title: "일정명3", date: "24.12.01", registrant: "거북이"},
       { id: 4, title: "일정명4", date: "24.12.10", registrant: "물고기"},
   ];
+  const router = useRouter();
 
   // 현재 날짜 가져오기
   const today = new Date();
@@ -71,7 +73,7 @@ export default function Schedule() {
                 </View>
             </View>
         ))}
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={() => router.push("/schedule/add_schedule")}>
           <PlusBtn width={52} height={52} />
         </TouchableOpacity>
       </ScrollView>
