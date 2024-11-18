@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import LoadingWhale from "@/assets/images/icons/loadingWhale.gif";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
+// 임시로 5초뒤에 넘어가도록 함
 
 export default function SendingLetter() {
     const router = useRouter();
