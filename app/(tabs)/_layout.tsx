@@ -2,49 +2,44 @@ import { Tabs } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import Member from "@/assets/images/icons/my.svg";
+import Member from "@/assets/images/icons/member.svg";
 import Schedule from "@/assets/images/icons/schedule.svg";
 import Home from "@/assets/images/icons/home.svg";
 import Letter from "@/assets/images/icons/letter.svg";
 import My from "@/assets/images/icons/my.svg";
 
-import Member_Focused from "@/assets/images/icons/my_focused.svg";
-import Schedule_Focused from "@/assets/images/icons/schedule_focused.svg";
-import Home_Focused from "@/assets/images/icons/home_focused.svg";
-import Letter_Focused from "@/assets/images/icons/letter_focused.svg";
-import My_Focused from "@/assets/images/icons/my_focused.svg";
 import colors from "@/constants/colors";
 import { ReactNode } from "react";
 
 const TabComponent = ({
   focused,
   label,
-  defaultIcon,
-  focusedIcon,
+  icon,
 }: {
   focused: boolean;
-  label: string;
-  defaultIcon: ReactNode;
-  focusedIcon: ReactNode;
+  icon: ReactNode;
+  label?: string;
 }) => (
   <View style={styles.iconWrapper}>
-    {focused ? focusedIcon : defaultIcon}
-    <Text
-      style={[
-        styles.label,
-        {
-          ...(focused
-            ? {
-                textShadowColor: "#FFF",
-                textShadowOffset: { width: 0, height: 0 },
-                textShadowRadius: 5,
-              }
-            : {}),
-        },
-      ]}
-    >
-      {label}
-    </Text>
+    {icon}
+    {label && (
+      <Text
+        style={[
+          styles.label,
+          {
+            ...(focused
+              ? {
+                  textShadowColor: colors.white,
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 5,
+                }
+              : {}),
+          },
+        ]}
+      >
+        {label}
+      </Text>
+    )}
   </View>
 );
 
@@ -67,7 +62,7 @@ export default function TabLayout() {
             elevation: 0,
           },
           sceneStyle: {
-            backgroundColor: "#211f44",
+            backgroundColor: colors.tempBackground,
           },
         }}
       >
@@ -78,8 +73,9 @@ export default function TabLayout() {
               <TabComponent
                 focused={focused}
                 label="멤버"
-                defaultIcon={<Member />}
-                focusedIcon={<Member_Focused />}
+                icon={
+                  <Member style={[{ marginLeft: 4.75 }, focused ? styles.dropShadow : undefined]} />
+                }
               />
             ),
           }}
@@ -91,8 +87,7 @@ export default function TabLayout() {
               <TabComponent
                 focused={focused}
                 label="일정"
-                defaultIcon={<Schedule />}
-                focusedIcon={<Schedule_Focused />}
+                icon={<Schedule style={focused ? styles.dropShadow : undefined} />}
               />
             ),
           }}
@@ -103,9 +98,21 @@ export default function TabLayout() {
             tabBarIcon: ({ focused }) => (
               <TabComponent
                 focused={focused}
-                label="홈"
-                defaultIcon={<Home />}
-                focusedIcon={<Home_Focused />}
+                icon={
+                  <View
+                    style={{
+                      width: 52,
+                      height: 52,
+                      flexShrink: 0,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: colors.blue_gray_46,
+                      borderRadius: 999,
+                    }}
+                  >
+                    <Home style={focused ? styles.dropShadow : undefined} />
+                  </View>
+                }
               />
             ),
           }}
@@ -117,8 +124,7 @@ export default function TabLayout() {
               <TabComponent
                 focused={focused}
                 label="편지"
-                defaultIcon={<Letter />}
-                focusedIcon={<Letter_Focused />}
+                icon={<Letter style={focused ? styles.dropShadow : undefined} />}
               />
             ),
           }}
@@ -130,8 +136,7 @@ export default function TabLayout() {
               <TabComponent
                 focused={focused}
                 label="마이"
-                defaultIcon={<My />}
-                focusedIcon={<My_Focused />}
+                icon={<My style={focused ? styles.dropShadow : undefined} />}
               />
             ),
           }}
@@ -143,14 +148,22 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   iconWrapper: {
-    flex: 1,
-    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 8,
   },
   label: {
     color: colors.white,
     textAlign: "center",
     fontSize: 12,
     fontWeight: "600",
+    lineHeight: 16.768,
     letterSpacing: -0.3,
+  },
+  dropShadow: {
+    shadowColor: colors.white, // Shadow color
+    shadowOffset: { width: 0, height: 0 }, // Shadow offset
+    shadowOpacity: 1, // Shadow opacity
+    shadowRadius: 5, // Shadow blur radius
+    elevation: 5, // Required for Android shadow
   },
 });
