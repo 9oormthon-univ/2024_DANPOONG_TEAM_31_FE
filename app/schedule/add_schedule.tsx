@@ -11,11 +11,13 @@ import {
   Keyboard,
 } from "react-native";
 import EditBtn from "@/assets/images/icons/edit_btn.svg";
+import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
 
 // 나중에 상단, 하단바에 따라 위치 변경 예정
 
 export default function AddSchedule() {
+    const router = useRouter();
   const [title, setTitle] = useState(""); // 일정명 입력값
   const [date, setDate] = useState(""); // 날짜 입력값
   const [memo, setMemo] = useState(""); // 메모 입력값
@@ -81,7 +83,7 @@ export default function AddSchedule() {
             </View>
 
             {/* 완료 버튼 */}
-            <TouchableOpacity style={styles.completeButton}>
+            <TouchableOpacity style={styles.completeButton} onPress={() => router.push("/schedule/sending_schedule")}>
               <Text style={styles.completeButtonText}>완료</Text>
             </TouchableOpacity>
           </View>
