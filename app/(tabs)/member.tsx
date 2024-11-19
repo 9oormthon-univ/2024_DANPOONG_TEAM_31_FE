@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 
 export default function Member() {
@@ -13,6 +14,7 @@ export default function Member() {
 
   return (
     <View style={styles.container}>
+      <HeaderBar title="가족을 초대해주세요!" />
       <Text style={styles.title}>멤버 리스트</Text>
       {/* 내 정보 */}
       <View style={styles.memberItem}>
