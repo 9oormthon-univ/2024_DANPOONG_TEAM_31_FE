@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, usePathname, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -44,6 +44,9 @@ const TabComponent = ({
 );
 
 export default function TabLayout() {
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "right", "left"]}>
       <Tabs
@@ -115,6 +118,15 @@ export default function TabLayout() {
                 }
               />
             ),
+          }}
+          listeners={{
+            tabPress: (e) => {
+              if (pathname !== "/home") {
+                router.navigate("/(tabs)/home");
+              } else {
+                console.log("d");
+              }
+            },
           }}
         />
         <Tabs.Screen
