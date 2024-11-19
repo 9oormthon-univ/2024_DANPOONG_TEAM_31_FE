@@ -21,6 +21,13 @@ export default function Index() {
       >
         <Text>홈</Text>
       </Pressable>
+      <Pressable
+        onPress={() => {
+          router.push("../login");
+        }}
+      >
+        <Text>로그인페이지</Text>
+      </Pressable>
     </View>
   );
 }
