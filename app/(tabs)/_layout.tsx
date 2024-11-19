@@ -7,6 +7,7 @@ import Schedule from "@/assets/images/icons/schedule.svg";
 import Home from "@/assets/images/icons/home.svg";
 import Letter from "@/assets/images/icons/letter.svg";
 import My from "@/assets/images/icons/my.svg";
+import BackgroundImg from "@/assets/images/background.svg";
 
 import colors from "@/constants/colors";
 import { ReactNode } from "react";
@@ -48,51 +49,27 @@ export default function TabLayout() {
   const pathname = usePathname();
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top", "right", "left"]}>
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarActiveBackgroundColor: undefined,
-          tabBarActiveTintColor: undefined,
-          tabBarStyle: {
-            backgroundColor: "transparent",
-            borderTopWidth: 0,
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            elevation: 0,
-          },
-          sceneStyle: {
-            backgroundColor: colors.tempBackground,
-          },
-        }}
-      >
-        <Tabs.Screen
-          name="member"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabComponent
-                focused={focused}
-                label="멤버"
-                icon={
-                  <Member style={[{ marginLeft: 4.75 }, focused ? styles.dropShadow : undefined]} />
-                }
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="schedule"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabComponent
-                focused={focused}
-                label="일정"
-                icon={<Schedule style={focused ? styles.dropShadow : undefined} />}
-              />
-            ),
+    <View style={styles.container}>
+      <BackgroundImg width="100%" height="100%" style={styles.background} />
+      <SafeAreaView style={{ flex: 1 }} edges={["top", "right", "left"]}>
+        <Tabs
+          screenOptions={{
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarActiveBackgroundColor: undefined,
+            tabBarActiveTintColor: undefined,
+            tabBarStyle: {
+              backgroundColor: "transparent",
+              borderTopWidth: 0,
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              elevation: 0,
+            },
+            sceneStyle: {
+              backgroundColor: "transparent",
+            },
           }}
         />
         <Tabs.Screen
@@ -159,6 +136,17 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: "relative",
+  },
+  background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   iconWrapper: {
     alignItems: "center",
     gap: 8,
