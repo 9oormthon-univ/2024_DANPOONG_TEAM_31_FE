@@ -93,17 +93,24 @@ export default function TextMessage() {
             </View>
 
             {/* 태그 리스트 */}
-            {/* 이거 고정 메세지 인가 혹은 랜덤 메세지 인가에 따라 스타일 변경 예정 */}
-            <ScrollView horizontal style={styles.tagScroll}>
-                {["고생했어", "파이팅", "오늘 하루도 고생 많았다", "힘들었지", "항상 응원해"].map((tag, index) => (
-                    <View key={index} style={styles.tagContainer}>
-                        <Text style={styles.tagText}>{tag}</Text>
-                    </View>
-                ))}
+            <View style={styles.tagGrid}>
+            {[
+                "고생했어",
+                "파이팅",
+                "오늘 하루도 고생 많았다",
+                "힘들었지",
+                "아자아자",
+                "항상 응원해",
+                "고생했어",
+            ].map((tag, index) => (
+                <View key={index} style={styles.tagContainer}>
+                    <Text style={styles.tagText}>{tag}</Text>
+                </View>
+            ))}
                 <TouchableOpacity style={styles.addTagButton}>
                     <PlusBtn width={24} height={24} />
                 </TouchableOpacity>
-            </ScrollView>
+            </View>
 
             {/* 하단 바 */}
             <View style={styles.bottomBar}>
@@ -121,7 +128,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
         position: "relative",
     },
     messageBar: {
@@ -131,7 +137,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         width: 353,
         height: 66,
-        marginTop: 162,
+        marginTop: 68,
     },
     editBtnContainer: {
         backgroundColor: colors.blue_lightgray_FF,
@@ -213,20 +219,27 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: colors.blue_gray_55,
     },
-    tagScroll: {
+    tagGrid: {
         flexDirection: "row",
-        marginTop: 180,
-        marginLeft: 10,
-    },
+        flexWrap: "wrap", // 태그를 여러 줄로 나열
+        justifyContent: "flex-start",
+        marginTop: 64,
+        marginLeft: 8,
+        width: "90%", // 적절한 크기 조정
+        alignSelf: "center",
+        position: "relative",
+      },
     tagContainer: {
         borderWidth: 1,
         borderColor: colors.white,
         borderRadius: 26,
-        height: 35,
+        height: 38,
         marginRight: 8,
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 26,
+        paddingVertical: 11,
+        marginBottom: 7,
     },
     tagText: {
         fontSize: 12,
@@ -240,6 +253,9 @@ const styles = StyleSheet.create({
         width: 35,
         justifyContent: "center",
         alignItems: "center",
+        position: "absolute",
+        right: -5,
+        bottom: 10,
     },
     bottomBar: {
         width: 353,

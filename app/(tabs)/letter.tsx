@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import EmptyProfil from "@/assets/images/icons/empty_profil.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
+import HeaderBar from "@/components/header_bar";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
 
@@ -34,25 +35,28 @@ export default function Letter() {
 
   return (
     <View style={styles.container}>
-      {users.map((user) => (
-        <TouchableOpacity
-          key={user.id}
-          style={[
-            styles.profileContainer,
-            selectedUser === user.id && styles.selectedProfile,
-          ]}
-          onPress={() => handleUserSelect(user.id)}
-        >
-          <View style={styles.shadowContainer}>
-            {user.image ? (
-              <Image source={{ uri: user.image }} style={styles.profileImage} />
-            ) : (
-              <EmptyProfil width={100} height={100} />
-            )}
-          </View>
-          <Text style={styles.userName}>{user.name}</Text>
-        </TouchableOpacity>
-      ))}
+      <HeaderBar title="누구에게 메세지를 보낼까요?" />
+      <View style={styles.profilesContainer}>
+        {users.map((user) => (
+          <TouchableOpacity
+            key={user.id}
+            style={[
+              styles.profileContainer,
+              selectedUser === user.id && styles.selectedProfile,
+            ]}
+            onPress={() => handleUserSelect(user.id)}
+          >
+            <View style={styles.shadowContainer}>
+              {user.image ? (
+                <Image source={{ uri: user.image }} style={styles.profileImage} />
+              ) : (
+                <EmptyProfil width={100} height={100} />
+              )}
+            </View>
+            <Text style={styles.userName}>{user.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
       <TouchableOpacity onPress={handleNavigate} style={styles.arrowContainer}>
         <RightArrow style={styles.rightArrow} width={6} height={12} />
       </TouchableOpacity>
@@ -65,15 +69,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", // 수평 중앙 정렬
-    alignItems: "center", // 수직 중앙 정렬
-    paddingHorizontal: 25,
-    marginTop: 170, // 나중에 위치 바꾸기
+    justifyContent: "center",
+  },
+  profilesContainer: {
+    flexDirection: "row", // 가로 방향으로 정렬
+    flexWrap: "wrap", // 줄 바꿈
+    justifyContent: "center", // 중앙 정렬
+    marginTop: 143,
   },
   profileContainer: {
     alignItems: "center",
     marginBottom: 46,
-    width: "45%",
+    width: "40%", // 2개씩 나열되도록 너비 조정
   },
   selectedProfile: {
     // 선택된 상태에서 그림자를 추가
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
   arrowContainer: {
     position: "absolute",
     right: 30,
-    top: "30%", // 화면의 세로 중심 되도록 이것도 바꾸기
+    top: "45%",
     transform: [{ translateY: -6 }],
     padding: 10,
   },

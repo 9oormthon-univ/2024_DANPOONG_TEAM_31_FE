@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from "rea
 import PlusBtn from "@/assets/images/icons/plus_button.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import HeartWhale from "@/assets/images/icons/heart_whale_w_shadow.svg";
+import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
 import CheckSchedule from "@/app/schedule/check_schedule";
@@ -65,6 +66,7 @@ export default function Schedule() {
 
   return (
     <View style={styles.container}>
+      <HeaderBar title="등록된 일정을 확인해보세요." />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {schedules.map((schedule) => (
           <TouchableOpacity key={schedule.id} onPress={() => openModal(schedule)}>
@@ -121,6 +123,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   scrollContent: {
+    marginTop: 19,
   },
   scheduleItem: {
     flexDirection: "row",
