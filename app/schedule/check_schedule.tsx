@@ -13,6 +13,10 @@ import {
 import { useRouter } from "expo-router";
 import HeartWhale from "@/assets/images/icons/heart_whale_w_shadow.svg";
 import EnterBtn from "@/assets/images/icons/darkblue_enter.svg";
+import People from "@/assets/images/icons/white_people.svg";
+import Memo from "@/assets/images/icons/white_memo.svg";
+import Calendar from "@/assets/images/icons/white_calendar.svg";
+import XBtn from "@/assets/images/icons/x_light.svg";
 import colors from "@/constants/colors";
 
 // 키보드 가려짐 현상 원인불명
@@ -55,40 +59,57 @@ export default function CheckSchedule({
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+        onClose(); // 모달 닫기
+      }}
+    >
       <KeyboardAvoidingView
         style={styles.modalContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.modalContent}>
           <View style={styles.topbar}>
+            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+              <XBtn width={24} height={24} />
+            </TouchableOpacity>
             <Text style={styles.title}>{schedule.title}</Text>
-            <View style={styles.dDayCircle}>
-              <Text
-                style={[
-                  styles.dDayText,
-                  calculateDDay(schedule.date) === "D-Day" &&
-                    styles.dDayTextHighlight,
-                ]}
-              >
-                {calculateDDay(schedule.date)}
-              </Text>
-            </View>
           </View>
           <View style={styles.info}>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>등록자</Text>
-              <Text style={styles.infoValue}>{schedule.registrant}</Text>
+            <View style={styles.nameContainer}>
+              <People width={11.56} height={13} />
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>등록자</Text>
+                <Text style={styles.infoValue}>{schedule.registrant}</Text>
+              </View>
             </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>날짜</Text>
-              <Text style={styles.infoValue}>{schedule.date}</Text>
+            <View style={styles.dateContainer}>
+            <Calendar width={11.58} height={13} />
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>날짜</Text>
+                <Text style={styles.infoValue}>{schedule.date}</Text>
+                <View style={styles.dDayCircle}>
+                  <Text
+                    style={[
+                      styles.dDayText,
+                      calculateDDay(schedule.date) === "D-Day" &&
+                        styles.dDayTextHighlight,
+                    ]}
+                  >
+                    {calculateDDay(schedule.date)}
+                  </Text>
+                </View>
+              </View>
             </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>메모</Text>
-              <Text style={styles.infoValue}>
-                {schedule.memo || "메모가 없습니다."}
-              </Text>
+            <View style={styles.memoContainer}>
+              <Memo width={13} height={13} />
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>메모</Text>
+                <Text style={styles.infoValue}>
+                  {schedule.memo || "메모가 없습니다."}
+                </Text>
+              </View>
             </View>
           </View>
           <HeartWhale width={50} height={50} style={styles.icon} />
@@ -142,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.blue_gray_76,
     borderRadius: 30,
     position: "absolute",
-    top: 195,
+    top: 200,
     shadowColor: "#FFFFFF", // 흰색 그림자 색상
     shadowOffset: { width: 0, height: 4 }, // 그림자 위치
     shadowOpacity: 0.3, // 그림자 투명도
@@ -151,13 +172,18 @@ const styles = StyleSheet.create({
   },
   topbar: {
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 21,
     position: "relative",
     width: "100%",
     justifyContent: "center",
   },
+  closeBtn:{
+    position: "absolute",
+    top: 0,
+    right: 21,
+  },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "700",
     color: colors.white,
     marginBottom: 10,
@@ -165,13 +191,10 @@ const styles = StyleSheet.create({
   dDayCircle: {
     backgroundColor: colors.blue_lightgray_FF,
     borderRadius: 20,
-    width: 48,
-    height: 25,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
-    top: 0,
-    right: 20,
   },
   dDayTextHighlight: {
     color: colors.red,
@@ -185,29 +208,30 @@ const styles = StyleSheet.create({
     marginTop: 41,
     marginLeft: 33,
   },
+  nameContainer:{
+    flexDirection: "row",
+  },
   infoRow: {
     flexDirection: "row",
     marginBottom: 9,
   },
   infoLabel: {
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "700",
     color: colors.white,
-    width: 34,
-    textAlign: "right",
-    marginRight: 9,
+    width: 42,
+    marginRight: 10,
+    marginLeft: 7.44,
   },
   infoValue: {
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "400",
     color: colors.white,
-    flex: 1,
-    textAlign: "left",
   },
   icon: {
     alignSelf: "center",
     position: "absolute",
-    bottom: 27,
+    bottom: 24,
   },
   bottomModalContent: {
     backgroundColor: "#F5F5F5",
