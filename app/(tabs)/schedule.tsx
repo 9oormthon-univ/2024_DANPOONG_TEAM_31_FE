@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from "react-native";
 import PlusBtn from "@/assets/images/icons/plus_button.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
+import HeartWhale from "@/assets/images/icons/heart_whale_w_shadow.svg";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
 import CheckSchedule from "@/app/schedule/check_schedule";
@@ -99,6 +100,9 @@ export default function Schedule() {
           <PlusBtn width={52} height={52} />
         </TouchableOpacity>
       </ScrollView>
+
+      <HeartWhale width={53} height={40.92} style={styles.heartWhale} />
+
       <Modal visible={modalVisible} transparent={true} animationType="slide">
         <CheckSchedule
           schedule={selectedSchedule}
@@ -114,6 +118,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    position: "relative",
   },
   scrollContent: {
   },
@@ -177,5 +182,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "flex-end",
+  },
+  heartWhale: {
+    position: "absolute",
+    bottom: 116.08,
   },
 });
