@@ -71,67 +71,96 @@ export default function TabLayout() {
               backgroundColor: "transparent",
             },
           }}
-        />
-        <Tabs.Screen
-          name="home"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabComponent
-                focused={focused}
-                icon={
-                  <View
-                    style={{
-                      width: 52,
-                      height: 52,
-                      flexShrink: 0,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: colors.blue_gray_46,
-                      borderRadius: 999,
-                    }}
-                  >
-                    <Home style={focused ? styles.dropShadow : undefined} />
-                  </View>
+        >
+          <Tabs.Screen
+            name="member"
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabComponent
+                  focused={focused}
+                  label="멤버"
+                  icon={
+                    <Member
+                      style={[{ marginLeft: 4.75 }, focused ? styles.dropShadow : undefined]}
+                    />
+                  }
+                />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="schedule"
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabComponent
+                  focused={focused}
+                  label="일정"
+                  icon={<Schedule style={focused ? styles.dropShadow : undefined} />}
+                />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="home"
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabComponent
+                  focused={focused}
+                  icon={
+                    <View
+                      style={{
+                        width: 52,
+                        height: 52,
+                        flexShrink: 0,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: colors.blue_gray_46,
+                        borderRadius: 999,
+                      }}
+                    >
+                      <Home style={focused ? styles.dropShadow : undefined} />
+                    </View>
+                  }
+                />
+              ),
+            }}
+            listeners={{
+              tabPress: (e) => {
+                if (pathname !== "/home") {
+                  router.navigate("/(tabs)/home");
+                } else {
+                  console.log("d");
                 }
-              />
-            ),
-          }}
-          listeners={{
-            tabPress: (e) => {
-              if (pathname !== "/home") {
-                router.navigate("/(tabs)/home");
-              } else {
-                console.log("d");
-              }
-            },
-          }}
-        />
-        <Tabs.Screen
-          name="letter"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabComponent
-                focused={focused}
-                label="편지"
-                icon={<Letter style={focused ? styles.dropShadow : undefined} />}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="my"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <TabComponent
-                focused={focused}
-                label="마이"
-                icon={<My style={focused ? styles.dropShadow : undefined} />}
-              />
-            ),
-          }}
-        />
-      </Tabs>
-    </SafeAreaView>
+              },
+            }}
+          />
+          <Tabs.Screen
+            name="letter"
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabComponent
+                  focused={focused}
+                  label="편지"
+                  icon={<Letter style={focused ? styles.dropShadow : undefined} />}
+                />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="my"
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <TabComponent
+                  focused={focused}
+                  label="마이"
+                  icon={<My style={focused ? styles.dropShadow : undefined} />}
+                />
+              ),
+            }}
+          />
+        </Tabs>
+      </SafeAreaView>
+    </View>
   );
 }
 

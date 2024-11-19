@@ -25,5 +25,5 @@ export function randomPosition(
   );
 
   existingPositions.push({ top, left });
-  return { top: top + 20, left };
+  return { top: top + 20, left: left + 20 };
 }
