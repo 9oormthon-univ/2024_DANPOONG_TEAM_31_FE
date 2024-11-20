@@ -19,7 +19,7 @@ import Calendar from "@/assets/images/icons/white_calendar.svg";
 import XBtn from "@/assets/images/icons/x_light.svg";
 import colors from "@/constants/colors";
 
-// 키보드 가려짐 현상 원인불명
+// 키보드 가려짐 현상 원인불명, 중간 라인으로 맞추려면 각각 그룹으로 묶고 height 설정해 줘야함 안그러면 달라짐(보류)
 
 // 일정 항목 타입 정의
 interface ScheduleItem {
@@ -77,28 +77,34 @@ export default function CheckSchedule({
             <Text style={styles.title}>{schedule.title}</Text>
           </View>
           <View style={styles.info}>
-            <View style={styles.nameContainer}>
-              <People width={11.56} height={13} />
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>등록자</Text>
-                <Text style={styles.infoValue}>{schedule.registrant}</Text>
+            <View style={styles.nameDateContainer}>
+              <View style={styles.nameContainer}>
+                <View style={styles.frontIconContainer}>
+                  <People width={11.56} height={13}/>
+                </View>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>등록자</Text>
+                  <Text style={styles.infoValue}>{schedule.registrant}</Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.dateContainer}>
-            <Calendar width={11.58} height={13} />
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>날짜</Text>
-                <Text style={styles.infoValue}>{schedule.date}</Text>
-                <View style={styles.dDayCircle}>
-                  <Text
-                    style={[
-                      styles.dDayText,
-                      calculateDDay(schedule.date) === "D-Day" &&
-                        styles.dDayTextHighlight,
-                    ]}
-                  >
-                    {calculateDDay(schedule.date)}
-                  </Text>
+              <View style={styles.dateContainer}>
+                <Calendar width={11.58} height={13} />
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoLabel}>날짜</Text>
+                  <View style={styles.ddContainer}>
+                    <View style={styles.dDayCircle}>
+                      <Text
+                        style={[
+                          styles.dDayText,
+                          calculateDDay(schedule.date) === "D-Day" &&
+                            styles.dDayTextHighlight,
+                        ]}
+                      >
+                        {calculateDDay(schedule.date)}
+                      </Text>
+                    </View>
+                    <Text style={styles.infoValue}>{schedule.date}</Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -149,7 +155,6 @@ export default function CheckSchedule({
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     position: "relative",
@@ -186,40 +191,58 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: colors.white,
-    marginBottom: 10,
   },
   dDayCircle: {
     backgroundColor: colors.blue_lightgray_FF,
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
+    borderRadius: 11,
+    paddingHorizontal: 4,
+    paddingVertical: 2.2,
+    width: 39,
     alignItems: "center",
-    justifyContent: "center",
   },
   dDayTextHighlight: {
     color: colors.red,
   },
   dDayText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "700",
     color: colors.blue_gray_46,
   },
   info: {
-    marginTop: 41,
-    marginLeft: 33,
+    marginTop: 40,
+    marginLeft: 43,
+    width: 280,
+  },
+  nameDateContainer: {
+    flexDirection: "row",
+  },
+  frontIconContainer: {
+    // justifyContent: "center",
+    // alignItems: "center",
   },
   nameContainer:{
+    flexDirection: "row",
+    flex: 1,
+  },
+  dateContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    flex: 1,
+  },
+  ddContainer: {
+
+  },
+  memoContainer: {
     flexDirection: "row",
   },
   infoRow: {
     flexDirection: "row",
-    marginBottom: 9,
+    marginBottom: 26,
   },
   infoLabel: {
     fontSize: 16,
     fontWeight: "700",
     color: colors.white,
-    width: 42,
     marginRight: 10,
     marginLeft: 7.44,
   },

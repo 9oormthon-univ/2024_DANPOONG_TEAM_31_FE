@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 
@@ -9,8 +10,16 @@ import DarkBlueBubble from "@/assets/images/icons/darkblue_speech_bubble.svg";
 import CloudLetter from "@/assets/images/icons/Cloud_letters_big.svg";
 import BouncingComponent from "@/components/BouncingComponent";
 import { randomPosition } from "../modules/randomPosition";
+import AudioMessage from "@/components/audio_message";
+import ImgTextMessage from "@/components/imgtext_message";
 
 export default function Home() {
+
+  const [isModalVisible, setIsModalVisible] = useState(false); // 모달 상태 관리
+
+  const openModal = () => setIsModalVisible(true);
+  const closeModal = () => setIsModalVisible(false);
+
   return (
     <View style={styles.container}>
       <HeaderBar title="민정님, 안녕하세요" />
@@ -27,13 +36,20 @@ export default function Home() {
       <View style={styles.separator}></View>
       <View style={styles.cloudsBoundary}>
         {[1, 2, 3].map((value) => (
-          <View key={value} style={{ position: "absolute", ...randomPosition() }}>
+          <TouchableOpacity
+          key={value}
+          style={{ position: "absolute", ...randomPosition() }}
+          onPress={openModal}
+          >
             <BouncingComponent timingIndex={value}>
               <CloudLetter />
             </BouncingComponent>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
+
+      {/* <AudioMessage visible={isModalVisible} onClose={closeModal} /> AudioMessage 모달 */}
+      <ImgTextMessage visible={isModalVisible} onClose={closeModal} /> {/* ImgTextMessage 모달 */}
     </View>
   );
 }
