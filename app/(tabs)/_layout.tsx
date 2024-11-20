@@ -7,11 +7,11 @@ import Schedule from "@/assets/images/icons/schedule.svg";
 import Home from "@/assets/images/icons/home.svg";
 import Letter from "@/assets/images/icons/letter.svg";
 import My from "@/assets/images/icons/my.svg";
-import BackgroundImg from "@/assets/images/background.svg";
 
 import colors from "@/constants/colors";
 import { ReactNode } from "react";
 import { useMemoStore } from "@/stores/memo";
+import { Background } from "@/components/Background";
 
 const TabComponent = ({
   focused,
@@ -53,7 +53,7 @@ export default function TabLayout() {
 
   return (
     <View style={styles.container}>
-      <BackgroundImg width="100%" height="100%" style={styles.background} />
+      <Background />
       <SafeAreaView style={{ flex: 1 }} edges={["top", "right", "left"]}>
         <Tabs
           screenOptions={{
@@ -171,13 +171,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative",
-  },
-  background: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
   },
   iconWrapper: {
     alignItems: "center",
