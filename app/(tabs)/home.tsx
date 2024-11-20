@@ -34,7 +34,7 @@ import { EnterMemo } from "@/components/newMemo/EnterMemo";
 export default function Home() {
   const { type, setType } = useMemoStore();
   const insets = useSafeAreaInsets();
-    
+
   const [isModalVisible, setIsModalVisible] = useState(false); // 모달 상태 관리
 
   const openModal = () => setIsModalVisible(true);
@@ -43,14 +43,17 @@ export default function Home() {
   // TODO add deps
   const CloudLetters = useMemo(() => {
     return [1, 2, 3].map((value) => (
-      <View key={value} style={{ position: "absolute", ...randomPosition() }}>
+      <TouchableOpacity
+        key={value}
+        style={{ position: "absolute", ...randomPosition() }}
+        onPress={openModal}
+      >
         <BouncingComponent timingIndex={value}>
           <CloudLetter />
         </BouncingComponent>
-      </View>
+      </TouchableOpacity>
     ));
   }, []);
-
 
   return (
     <View style={styles.container}>
@@ -71,7 +74,6 @@ export default function Home() {
         <SpeechBubbleWithMail style={{ position: "absolute", top: -44, right: -11 }} />
         <Whale />
       </View>
-
       <Modal animationType="fade" transparent={true} visible={type !== undefined}>
         <BlurView style={StyleSheet.absoluteFill} intensity={15} tint="light" />
         <View style={[styles.modal, { marginBottom: insets.bottom }]}>
@@ -95,20 +97,6 @@ export default function Home() {
           </Pressable>
         </View>
       </Modal>
-      <View style={styles.cloudsBoundary}>
-        {[1, 2, 3].map((value) => (
-          <TouchableOpacity
-          key={value}
-          style={{ position: "absolute", ...randomPosition() }}
-          onPress={openModal}
-          >
-            <BouncingComponent timingIndex={value}>
-              <CloudLetter />
-            </BouncingComponent>
-          </TouchableOpacity>
-        ))}
-      </View>
-
       {/* <AudioMessage visible={isModalVisible} onClose={closeModal} /> AudioMessage 모달 */}
       {/* <ImgTextMessage visible={isModalVisible} onClose={closeModal} /> ImgTextMessage 모달 */}
       <TextMessage visible={isModalVisible} onClose={closeModal} /> {/* TextMessage 모달 */}
