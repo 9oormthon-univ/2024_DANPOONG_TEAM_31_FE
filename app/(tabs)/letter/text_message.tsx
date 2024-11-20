@@ -7,6 +7,7 @@ import PlusBtn from "@/assets/images/icons/black_plus_btn.svg";
 import EnterButton from "@/assets/images/icons/darkblue_enter.svg";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
+import HeaderBar from "@/components/header_bar";
 
 export default function TextMessage() {
     const [message, setMessage] = useState(""); // 텍스트 입력값 관리
@@ -55,8 +56,15 @@ export default function TextMessage() {
         router.push("/letter/sending_letter");
     };
 
+    const handleTagPress = (tag: string) => {
+        // 태그 클릭 시 messageInput에 추가
+        setMessage((prevMessage) => (prevMessage ? `${prevMessage} ${tag}` : tag));
+        setStatusText("작성완료");
+    };
+
     return (
         <View style={styles.container}>
+            <HeaderBar title="텍스트 메시지를 작성중입니다." />
             {/* 상단 메세지 바 */}
             <View style={styles.messageBar}>
                 <View style={styles.editBtnContainer}>
@@ -103,9 +111,13 @@ export default function TextMessage() {
                 "항상 응원해",
                 "고생했어",
             ].map((tag, index) => (
-                <View key={index} style={styles.tagContainer}>
+                <TouchableOpacity
+                    key={index}
+                    style={styles.tagContainer}
+                    onPress={() => handleTagPress(tag)} // 태그 클릭 이벤트
+                >
                     <Text style={styles.tagText}>{tag}</Text>
-                </View>
+                </TouchableOpacity>
             ))}
                 <TouchableOpacity style={styles.addTagButton}>
                     <PlusBtn width={24} height={24} />
@@ -223,7 +235,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap", // 태그를 여러 줄로 나열
         justifyContent: "flex-start",
-        marginTop: 64,
+        marginTop: 45,
         marginLeft: 8,
         width: "90%", // 적절한 크기 조정
         alignSelf: "center",
@@ -265,7 +277,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         position: "absolute",
-        top: 695,
+        top: 645,
     },
     sendText: {
         fontSize: 16,

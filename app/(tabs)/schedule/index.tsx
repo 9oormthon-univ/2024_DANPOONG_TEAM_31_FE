@@ -6,7 +6,7 @@ import HeartWhale from "@/assets/images/icons/heart_whale_w_shadow.svg";
 import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
-import CheckSchedule from "@/app/schedule/check_schedule";
+import CheckSchedule from "./check_schedule";
 
 // 일정 항목의 타입 정의
 interface ScheduleItem {

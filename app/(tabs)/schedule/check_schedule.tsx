@@ -18,8 +18,9 @@ import Memo from "@/assets/images/icons/white_memo.svg";
 import Calendar from "@/assets/images/icons/white_calendar.svg";
 import XBtn from "@/assets/images/icons/x_light.svg";
 import colors from "@/constants/colors";
+import { SendingAnimation } from "@/components/SendingAnimation";
 
-// 키보드 가려짐 현상 원인불명, 중간 라인으로 맞추려면 각각 그룹으로 묶고 height 설정해 줘야함 안그러면 달라짐(보류)
+// 키보드 가려짐 현상 원인불명
 
 // 일정 항목 타입 정의
 interface ScheduleItem {
@@ -42,8 +43,8 @@ export default function CheckSchedule({
     onClose,
     calculateDDay,
   }: CheckScheduleProps) {
+    const [isSending, setIsSending] = useState(false); // 전송 상태 관리
     const [inputValue, setInputValue] = useState(""); // TextInput 상태 관리
-    const router = useRouter();
 
   if (!schedule) return null;
 
@@ -52,11 +53,23 @@ export default function CheckSchedule({
     setInputValue((prev) => (prev ? `${prev} ${label}` : label));
   };
 
-  // 페이지 이동 함수
-  const navigateToSendingLetter = () => {
-    onClose();
-    router.push("/letter/sending_letter");
+  // 전송 버튼 클릭 시
+  const handleSend = () => {
+    // onClose();
+    setIsSending(true); // 전송 상태로 변경
   };
+
+  // 전송 중/완료 컴포넌트 렌더링
+  if (isSending) {
+      return (
+          <SendingAnimation
+              sendingMessage="편지 전달 중"
+              doneMessage1="000님의 따뜻한 한마디가"
+              doneMessage2="000님에게 전달되었어요!"
+              doneExtraMessage="00님에게 큰 힘이 되어줄꺼예요.{\n}다음에도 찾아와주세요."
+          />
+      );
+  }
 
   return (
     <TouchableWithoutFeedback
@@ -88,7 +101,9 @@ export default function CheckSchedule({
                 </View>
               </View>
               <View style={styles.dateContainer}>
-                <Calendar width={11.58} height={13} />
+                <View style={styles.frontIconContainer}>
+                  <Calendar width={11.58} height={13} />
+                </View>
                 <View style={styles.infoRow}>
                   <Text style={styles.infoLabel}>날짜</Text>
                   <View style={styles.ddContainer}>
@@ -103,15 +118,17 @@ export default function CheckSchedule({
                         {calculateDDay(schedule.date)}
                       </Text>
                     </View>
-                    <Text style={styles.infoValue}>{schedule.date}</Text>
+                    <Text style={styles.dateInfoValue}>{schedule.date}</Text>
                   </View>
                 </View>
               </View>
             </View>
             <View style={styles.memoContainer}>
-              <Memo width={13} height={13} />
+              <View style={styles.frontIconContainer}>
+                <Memo width={13} height={13} />
+              </View>
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>메모</Text>
+                <Text style={styles.memoInfoLabel}>메모</Text>
                 <Text style={styles.infoValue}>
                   {schedule.memo || "메모가 없습니다."}
                 </Text>
@@ -142,7 +159,7 @@ export default function CheckSchedule({
               value={inputValue} // 상태 값 바인딩
               onChangeText={setInputValue} // 사용자 입력 처리
             />
-            <TouchableOpacity style={styles.closeButton} onPress={navigateToSendingLetter}>
+            <TouchableOpacity style={styles.closeButton} onPress={handleSend}>
               <EnterBtn width={52} height={52} />
             </TouchableOpacity>
           </View>
@@ -217,8 +234,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   frontIconContainer: {
-    // justifyContent: "center",
-    // alignItems: "center",
+    paddingTop: 2,
   },
   nameContainer:{
     flexDirection: "row",
@@ -246,10 +262,24 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 7.44,
   },
+  memoInfoLabel: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: colors.white,
+    marginRight: 10,
+    marginLeft: 7.44,
+    paddingTop: 1,
+  },
   infoValue: {
     fontSize: 16,
     fontWeight: "400",
     color: colors.white,
+  },
+  dateInfoValue: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: colors.white,
+    paddingTop: 5,
   },
   icon: {
     alignSelf: "center",

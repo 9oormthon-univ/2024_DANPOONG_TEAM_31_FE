@@ -9,6 +9,7 @@ import PlayBtn from "@/assets/images/icons/play_btn.svg";
 import LeftArrow from "@/assets/images/icons/left_arrow.svg";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
+import HeaderBar from "@/components/header_bar";
 
 export default function VoiceMessage() {
     const router = useRouter();
@@ -137,6 +138,7 @@ export default function VoiceMessage() {
 
     return (
         <View style={styles.container}>
+            <HeaderBar title="음성 메시지를 기록중입니다." />
             <TouchableOpacity style={styles.leftArrow} onPress={() => router.back()}>
                 <LeftArrow width={6} height={12} />
             </TouchableOpacity>
@@ -182,22 +184,20 @@ export default function VoiceMessage() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
         position: "relative",
     },
     leftArrow: {
         position: "absolute",
         left: 30,
-        top: "50%",
+        top: 374,
     },
     buttonContainer: {
         alignItems: "center",
+        justifyContent: "center",
+        marginTop: 243,
     },
     button: {
-        justifyContent: "center",
-        alignItems: "center",
+        
     },
     buttonText: {
         marginTop: 10,
@@ -213,8 +213,9 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         flexDirection: "row",
         alignItems: "center",
+        alignSelf: "center",
         position: "absolute",
-        top: 695,
+        top: 645,
     },
     recordingTimeText: {
         fontSize: 16,

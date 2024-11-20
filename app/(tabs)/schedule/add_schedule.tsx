@@ -13,8 +13,7 @@ import {
 import EditBtn from "@/assets/images/icons/edit_btn.svg";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
-
-// 나중에 상단, 하단바에 따라 위치 변경 예정
+import HeaderBar from "@/components/header_bar";
 
 export default function AddSchedule() {
     const router = useRouter();
@@ -39,6 +38,7 @@ export default function AddSchedule() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      <HeaderBar title="일정의 세부내용이예요." />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
           {/* 상단 일정명 입력 영역 */}
@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
   },
   titleBar: {
@@ -112,6 +111,7 @@ const styles = StyleSheet.create({
     width: 353,
     height: 66,
     marginBottom: 15,
+    marginTop: 19,
   },
   iconContainer: {
     justifyContent: "center",
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginRight: 9,
     height: 16,
-    marginTop: 1,
+    paddingTop: 2,
   },
   memoInfoBox: {
     flexDirection: "row",
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
     marginRight: 9,
     height: 16,
     marginTop: 5,
+    paddingTop: 1,
   },
   infoTextInput: {
     flex: 1,
