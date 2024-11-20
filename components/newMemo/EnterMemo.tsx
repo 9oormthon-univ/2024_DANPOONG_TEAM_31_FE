@@ -69,6 +69,8 @@ export const EnterMemo = () => {
             style={styles.messageInput}
             onChangeText={(text) => setInput(text)}
             returnKeyType="done"
+            placeholder="작성해주세요."
+            placeholderTextColor={colors.blue_gray_46}
           />
           <TouchableOpacity style={styles.enterIcon} onPress={() => send()}>
             <DarkblueEnter />
@@ -81,7 +83,6 @@ export const EnterMemo = () => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 150,
     width: "100%",
     marginBottom: 12,
     backgroundColor: "#F5F5F5",
@@ -134,6 +135,7 @@ const styles = StyleSheet.create({
     position: "relative",
     height: 48,
     marginHorizontal: 20,
+    marginVertical: 30,
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 30,
