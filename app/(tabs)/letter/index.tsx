@@ -40,10 +40,7 @@ export default function Letter() {
         {users.map((user) => (
           <TouchableOpacity
             key={user.id}
-            style={[
-              styles.profileContainer,
-              selectedUser === user.id && styles.selectedProfile,
-            ]}
+            style={[styles.profileContainer, selectedUser === user.id && styles.selectedProfile]}
             onPress={() => handleUserSelect(user.id)}
           >
             <View style={styles.shadowContainer}>
@@ -115,7 +112,5 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -6 }],
     padding: 10,
   },
-  rightArrow: {
-    
-  },
+  rightArrow: {},
 });
