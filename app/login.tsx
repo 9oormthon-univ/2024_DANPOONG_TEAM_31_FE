@@ -1,7 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import HeartWhale from "@/assets/images/icons/heart_whale.svg";
 import KakaoLogin from "@/assets/images/icons/kakao_login.svg";
+import BackgroundImg from "@/assets/images/background.svg";
+import HeaderBar from "@/components/header_bar";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
 
@@ -9,40 +11,59 @@ export default function Login() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      {/* 로고 */}
-      <View style={styles.logoContainer}>
-        <HeartWhale width={50} height={50} />
-        <Text style={styles.appName}>WithU</Text>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      {/* 배경 이미지 */}
+      <BackgroundImg style={styles.background} />
+      <View style={styles.container}>
 
-      <View style={styles.loginContainer}>
-        {/* 카카오 로그인 버튼 */}
-        <TouchableOpacity style={styles.kakaoButton}>
-          <KakaoLogin width={300} height={70} />
-        </TouchableOpacity>
+        <HeaderBar title="안녕하세요! 환영해요." />
 
-        {/* 로그인 안내 */}
-        <View style={styles.loginHintContainer}>
-          <Text style={styles.loginHintText}>계정이 있으신가요? </Text>
-          <TouchableOpacity>
-            <Text style={styles.loginLink}>로그인</Text>
+        {/* 로고 */}
+        <View style={styles.logoContainer}>
+          <HeartWhale width={50} height={50} />
+          <Text style={styles.appName}>WithU</Text>
+        </View>
+
+        <View style={styles.loginContainer}>
+          {/* 카카오 로그인 버튼 */}
+          <TouchableOpacity style={styles.kakaoButton}>
+            <KakaoLogin width={300} height={70} />
           </TouchableOpacity>
+
+          {/* 로그인 안내 */}
+          <View style={styles.loginHintContainer}>
+            <Text style={styles.loginHintText}>계정이 있으신가요? </Text>
+            <TouchableOpacity>
+              <Text style={styles.loginLink}>로그인</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     position: "relative",
   },
+  background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+  },
   logoContainer: {
     alignItems: "center",
+    marginTop: 230,
   },
   appName: {
     marginTop: 3,
