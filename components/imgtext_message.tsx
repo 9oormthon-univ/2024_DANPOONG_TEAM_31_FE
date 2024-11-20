@@ -56,7 +56,7 @@ return (
               <View style={styles.modalContent}>
                   {/* Header */}
                   <View style={styles.header}>
-                      <Star width={49.14} height={44.72} style={styles.topIcon} />
+                      <Star width={46.21} height={44} style={styles.topIcon} />
                       <Text style={styles.scheduleName}>일정이름</Text>
                       <View style={styles.devide}></View>
                   </View>
@@ -75,7 +75,7 @@ return (
                         <View style={styles.imageContainer}>
                           <EmptyImage width={21} height={21} />
                         </View>
-                        <Text style={styles.textMessage}>내용</Text>
+                        <Text style={styles.textMessage}>내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.</Text>
                       </View>
                       <Text style={styles.fromText}>From. 토끼</Text>
                   </View>
@@ -200,6 +200,8 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginLeft: 18,
     fontFamily: "EFDiary",
+    width: 130,
+    lineHeight: 20,
   },
   fromText: {
       fontSize: 16,

@@ -12,6 +12,7 @@ import BouncingComponent from "@/components/BouncingComponent";
 import { randomPosition } from "../modules/randomPosition";
 import AudioMessage from "@/components/audio_message";
 import ImgTextMessage from "@/components/imgtext_message";
+import TextMessage from "@/components/text_message";
 
 export default function Home() {
 
@@ -49,7 +50,8 @@ export default function Home() {
       </View>
 
       {/* <AudioMessage visible={isModalVisible} onClose={closeModal} /> AudioMessage 모달 */}
-      <ImgTextMessage visible={isModalVisible} onClose={closeModal} /> {/* ImgTextMessage 모달 */}
+      {/* <ImgTextMessage visible={isModalVisible} onClose={closeModal} /> ImgTextMessage 모달 */}
+      <TextMessage visible={isModalVisible} onClose={closeModal} /> {/* TextMessage 모달 */}
     </View>
   );
 }
