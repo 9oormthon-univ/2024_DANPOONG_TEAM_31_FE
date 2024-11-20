@@ -11,6 +11,7 @@ import BackgroundImg from "@/assets/images/background.svg";
 
 import colors from "@/constants/colors";
 import { ReactNode } from "react";
+import { useMemoStore } from "@/stores/memo";
 
 const TabComponent = ({
   focused,
@@ -47,6 +48,8 @@ const TabComponent = ({
 export default function TabLayout() {
   const router = useRouter();
   const pathname = usePathname();
+
+  const { setType } = useMemoStore();
 
   return (
     <View style={styles.container}>
@@ -129,7 +132,7 @@ export default function TabLayout() {
                 if (pathname !== "/home") {
                   router.navigate("/(tabs)/home");
                 } else {
-                  console.log("d");
+                  setType("unselected");
                 }
               },
             }}

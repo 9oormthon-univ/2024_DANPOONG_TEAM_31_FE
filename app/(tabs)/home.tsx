@@ -1,16 +1,47 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
+import { BlurView } from "expo-blur";
+import { randomPosition } from "../../modules/randomPosition";
+import { useMemoStore } from "@/stores/memo";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import BouncingComponent from "@/components/BouncingComponent";
+import { useMemo } from "react";
 
 import Cloud from "@/assets/images/icons/cloud.svg";
 import SpeechBubble from "@/assets/images/icons/speech_bubble_default.svg";
 import Heart from "@/assets/images/icons/small_fill_heart.svg";
 import DarkBlueBubble from "@/assets/images/icons/darkblue_speech_bubble.svg";
 import CloudLetter from "@/assets/images/icons/Cloud_letters_big.svg";
-import BouncingComponent from "@/components/BouncingComponent";
-import { randomPosition } from "../modules/randomPosition";
+import Whale from "@/assets/images/icons/mainWhale.svg";
+import SpeechBubbleWithMail from "@/assets/images/icons/speech_bubble_w_mail.svg";
+import X from "@/assets/images/icons/x_light.svg";
+import { SelectMemoType } from "@/components/newMemo/SelectMemoType";
+import { EnterMemo } from "@/components/newMemo/EnterMemo";
 
 export default function Home() {
+  const { type, setType } = useMemoStore();
+  const insets = useSafeAreaInsets();
+
+  // TODO add deps
+  const CloudLetters = useMemo(() => {
+    return [1, 2, 3].map((value) => (
+      <View key={value} style={{ position: "absolute", ...randomPosition() }}>
+        <BouncingComponent timingIndex={value}>
+          <CloudLetter />
+        </BouncingComponent>
+      </View>
+    ));
+  }, []);
+
   return (
     <View style={styles.container}>
       <HeaderBar title="민정님, 안녕하세요" />
@@ -25,15 +56,35 @@ export default function Home() {
         ))}
       </View>
       <View style={styles.separator}></View>
-      <View style={styles.cloudsBoundary}>
-        {[1, 2, 3].map((value) => (
-          <View key={value} style={{ position: "absolute", ...randomPosition() }}>
-            <BouncingComponent timingIndex={value}>
-              <CloudLetter />
-            </BouncingComponent>
-          </View>
-        ))}
+      <View style={styles.cloudsBoundary}>{CloudLetters}</View>
+      <View style={{ position: "absolute", bottom: insets.bottom + 34 + 115.93, left: 155 }}>
+        <SpeechBubbleWithMail style={{ position: "absolute", top: -44, right: -11 }} />
+        <Whale />
       </View>
+
+      <Modal animationType="fade" transparent={true} visible={type !== undefined}>
+        <BlurView style={StyleSheet.absoluteFill} intensity={15} tint="light" />
+        <View style={[styles.modal, { marginBottom: insets.bottom }]}>
+          {type === "unselected" && <SelectMemoType />}
+          {(type === "mood" || type === "message") && <EnterMemo />}
+          <Pressable
+            style={{
+              width: 52,
+              height: 52,
+              flexShrink: 0,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: colors.blue_gray_46,
+              borderRadius: 999,
+            }}
+            onPress={() => {
+              setType(undefined);
+            }}
+          >
+            <X />
+          </Pressable>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -70,5 +121,10 @@ const styles = StyleSheet.create({
   cloudsBoundary: {
     flex: 1,
     position: "relative",
+  },
+  modal: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
 });
