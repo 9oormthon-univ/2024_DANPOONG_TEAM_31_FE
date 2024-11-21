@@ -1,20 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MoonIcon from "../assets/images/icons/moon.svg";
 import BellIcon from "../assets/images/icons/bell.svg";
 import SettingsIcon from "../assets/images/icons/settings.svg";
 import colors from "@/constants/colors";
+import { useRouter, usePathname } from "expo-router";
 
 interface HeaderBarProps {
   title: string; // 부모로부터 전달받는 문구
+  onBack?: () => void; // 뒤로 가기 콜백 함수
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({ title, onBack }) => {
+  const router = useRouter();
+  const pathname = usePathname();
 
   // 각 아이콘의 클릭 상태 관리
   const [isMoonActive, setIsMoonActive] = useState(false);
   const [isBellActive, setIsBellActive] = useState(false);
   const [isSettingsActive, setIsSettingsActive] = useState(false);
+
+  useEffect(() => {
+    // 현재 페이지가 설정 페이지라면 isSettingsActive를 true로 설정
+    setIsSettingsActive(pathname === "/home/settings");
+  }, [pathname]);
+
+  const handleSettingsPress = () => {
+    // 현재 경로가 설정 페이지라면 이전 페이지로 돌아감
+    if (pathname === "/home/settings") {
+      router.back();
+    } else {
+      // 설정 페이지로 이동
+      router.push("/home/settings");
+    }
+  };
 
   // 아이콘 스타일 동적 설정
   const getIconStyle = (isActive: boolean) => {
@@ -46,9 +65,11 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
               <BellIcon width={24} height={24} />
           </TouchableOpacity>
           {/* Settings Icon */}
-          <TouchableOpacity style={[styles.icon, getIconStyle(isSettingsActive)]}
-            onPress={() => setIsSettingsActive((prev) => !prev)}>
-              <SettingsIcon width={24} height={24} />
+          <TouchableOpacity
+            style={[styles.icon, getIconStyle(isSettingsActive)]}
+            onPress={handleSettingsPress}
+          >
+            <SettingsIcon width={24} height={24} />
           </TouchableOpacity>
         </View>
       </View>
