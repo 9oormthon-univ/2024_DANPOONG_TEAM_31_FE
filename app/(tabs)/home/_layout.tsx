@@ -14,6 +14,7 @@ export default function HomeLayout() {
         >
           <Stack.Screen name="home" />
           <Stack.Screen name="sending_memo" />
+          <Stack.Screen name="settings" />
         </Stack>
       </View>
     </Slot>
