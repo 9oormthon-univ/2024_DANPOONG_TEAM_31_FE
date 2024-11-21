@@ -11,6 +11,8 @@ export default function RootLayout() {
   // 폰트 로드
   const [fontsLoaded] = useFonts({
     EFDiary: require("@/assets/fonts/EFDiary.ttf"),
+    Cafe24SupermagicRegular: require("@/assets/fonts/Cafe24SupermagicRegular.ttf"),
+    JNEYunaRegular: require("@/assets/fonts/JNEYunaRegular.ttf"),
   });
 
   return (
