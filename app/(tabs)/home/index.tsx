@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 import { BlurView } from "expo-blur";
-import { randomPosition } from "../../modules/randomPosition";
+import { randomPosition } from "@/modules/randomPosition";
 import { useMemoStore } from "@/stores/memo";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BouncingComponent from "@/components/BouncingComponent";
