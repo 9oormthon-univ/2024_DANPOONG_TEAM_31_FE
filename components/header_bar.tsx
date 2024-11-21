@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MoonIcon from "../assets/images/icons/moon.svg";
-import BellIcon from "../assets/images/icons/bell.svg";
+import BellIcon from "../assets/images/icons/letterbox.svg";
 import SettingsIcon from "../assets/images/icons/settings.svg";
 import colors from "@/constants/colors";
 import { useRouter, usePathname } from "expo-router";
 
 interface HeaderBarProps {
   title: string; // 부모로부터 전달받는 문구
-  onBack?: () => void; // 뒤로 가기 콜백 함수
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({ title, onBack }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -23,6 +22,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title, onBack }) => {
   useEffect(() => {
     // 현재 페이지가 설정 페이지라면 isSettingsActive를 true로 설정
     setIsSettingsActive(pathname === "/home/settings");
+    setIsBellActive(pathname.startsWith("/letterbox"));
   }, [pathname]);
 
   const handleSettingsPress = () => {
@@ -32,6 +32,14 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title, onBack }) => {
     } else {
       // 설정 페이지로 이동
       router.push("/home/settings");
+    }
+  };
+
+  const handleBellPress = () => {
+    if (pathname.startsWith("/letterbox")) {
+      router.back(); // 이전 페이지로 돌아가기
+    } else {
+      router.push("/letterbox/letterbox_calendar"); // letterbox 캘린더 페이지로 이동
     }
   };
 
@@ -60,9 +68,11 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title, onBack }) => {
               <MoonIcon width={24} height={24} />
           </TouchableOpacity>
           {/* Bell Icon */}
-          <TouchableOpacity style={[styles.icon, getIconStyle(isBellActive)]}
-            onPress={() => setIsBellActive((prev) => !prev)}>
-              <BellIcon width={24} height={24} />
+          <TouchableOpacity
+            style={[styles.icon, getIconStyle(isBellActive)]}
+            onPress={handleBellPress}
+          >
+            <BellIcon width={24} height={24} />
           </TouchableOpacity>
           {/* Settings Icon */}
           <TouchableOpacity

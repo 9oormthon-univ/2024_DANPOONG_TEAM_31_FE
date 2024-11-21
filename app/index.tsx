@@ -28,13 +28,6 @@ export default function Index() {
       >
         <Text>로그인페이지</Text>
       </Pressable>
-      <Pressable
-        onPress={() => {
-          router.push("../settings");
-        }}
-      >
-        <Text>환경설정페이지</Text>
-      </Pressable>
     </View>
   );
 }
