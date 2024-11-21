@@ -2,13 +2,16 @@ import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import Stars from "@/assets/images/icons/stars.svg";
 import BlackMail from "@/assets/images/icons/black_mail.svg";
+import HeartWhaleWithShadow from "@/assets/images/icons/heart_whale_w_shadow.svg";
 
 export default function My() {
   const router = useRouter();
+  const tabBarHeight = useBottomTabBarHeight();
 
   return (
     <View style={styles.container}>
@@ -47,6 +50,16 @@ export default function My() {
           </View>
         </View>
       </View>
+      <View
+        style={{
+          position: "absolute",
+          left: "50%",
+          bottom: tabBarHeight + 20.08,
+          transform: "translate(-50%,0)",
+        }}
+      >
+        <HeartWhaleWithShadow />
+      </View>
     </View>
   );
 }
@@ -54,6 +67,7 @@ export default function My() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
   },
   card: {
     marginTop: 28,
