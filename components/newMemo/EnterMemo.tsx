@@ -13,9 +13,11 @@ import { useState } from "react";
 
 import ChevronRight from "@/assets/images/icons/black_chevron-right.svg";
 import DarkblueEnter from "@/assets/images/icons/darkblue_enter.svg";
+import { useRouter } from "expo-router";
 
 export const EnterMemo = () => {
-  const { type, setMemo } = useMemoStore();
+  const router = useRouter();
+  const { type, setType, setMemo } = useMemoStore();
 
   const setEmoji = (emojiName: string) => {
     setMemo({ mood: emojiName, type: "message" });
@@ -25,7 +27,8 @@ export const EnterMemo = () => {
 
   const send = () => {
     if (input.trim().length === 0) return alert("내용을 입력해주세요.");
-    setMemo({ message: input });
+    setMemo({ message: input, type: undefined });
+    router.push("/home/sending_memo");
   };
 
   return (
@@ -35,7 +38,7 @@ export const EnterMemo = () => {
           {type === "mood" && "지금 기분이 어떠세요?"}
           {type === "message" && "지금 고민을 이야기해주세요."}
         </Text>
-        <Pressable>
+        <Pressable onPress={() => (type === "mood" ? setType("message") : undefined)}>
           <ChevronRight style={{ marginRight: 16 }} />
         </Pressable>
       </View>

@@ -1,7 +1,7 @@
 import { Slot, Stack } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
-export default function LetterLayout() {
+export default function HomeLayout() {
   return (
     <Slot>
       <View style={styles.container}>
@@ -12,11 +12,8 @@ export default function LetterLayout() {
             statusBarTranslucent: true,
           }}
         >
-          <Stack.Screen name="index" />
-          <Stack.Screen name="select" />
-          <Stack.Screen name="sending_letter" />
-          <Stack.Screen name="text_message" />
-          <Stack.Screen name="voice_message" />
+          <Stack.Screen name="home" />
+          <Stack.Screen name="sending_memo" />
         </Stack>
       </View>
     </Slot>
