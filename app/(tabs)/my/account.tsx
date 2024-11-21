@@ -2,11 +2,11 @@ import HeaderBar from "@/components/header_bar";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import LeftArrow from "@/assets/images/icons/left_arrow.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import HeartWhaleWithShadow from "@/assets/images/icons/heart_whale_w_shadow.svg";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function Account() {
   const router = useRouter();
