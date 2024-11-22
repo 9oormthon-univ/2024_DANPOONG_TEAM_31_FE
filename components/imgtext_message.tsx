@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import colors from "@/constants/colors";
 import { BlurView } from 'expo-blur';
+import { useFontStore } from "@/stores/fontStore";
 
-import Star from "@/assets/images/icons/letter_star.svg";
 import EmptyHeart from "@/assets/images/icons/empty_heart.svg";
 import FillHeart from "@/assets/images/icons/fill_heart.svg";
 import EmptyImage from "@/assets/images/icons/white_image.svg";
@@ -24,10 +24,11 @@ interface ImgTextMessageProps {
 
 export default function ImgTextMessage({ visible, onClose }: ImgTextMessageProps) {
   const [liked, setLiked] = useState(false); // 좋아요 상태 관리
+  const { selectedFont } = useFontStore(); // Zustand에서 선택된 폰트 가져오기
 
-const toggleLike = () => {
-  setLiked((prev) => !prev); // 상태를 반전
-};
+  const toggleLike = () => {
+    setLiked((prev) => !prev); // 상태를 반전
+  };
 
 return (
   <View style={styles.container}>
@@ -56,7 +57,6 @@ return (
               <View style={styles.modalContent}>
                   {/* Header */}
                   <View style={styles.header}>
-                      <Star width={46.21} height={44} style={styles.topIcon} />
                       <Text style={styles.scheduleName}>일정이름</Text>
                       <View style={styles.devide}></View>
                   </View>
@@ -75,7 +75,7 @@ return (
                         <View style={styles.imageContainer}>
                           <EmptyImage width={21} height={21} />
                         </View>
-                        <Text style={styles.textMessage}>내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.</Text>
+                        <Text style={[styles.textMessage, { fontFamily: selectedFont }]}>내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.</Text>
                       </View>
                       <Text style={styles.fromText}>From. 토끼</Text>
                   </View>
@@ -147,9 +147,6 @@ const styles = StyleSheet.create({
       height: 95,
       alignItems: "center",
   },
-  topIcon: {
-      position: "absolute",
-  },
   scheduleName:{
       position: "absolute",
       fontSize: 16,
@@ -199,7 +196,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: colors.white,
     marginLeft: 18,
-    fontFamily: "EFDiary",
     width: 130,
     lineHeight: 20,
   },
