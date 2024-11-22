@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { useAudioRecorder, RecordingPresets } from "expo-audio";
 import { Audio } from "expo-av"; // expo-av 사용
 import * as FileSystem from "expo-file-system";
 import MicrophoneBtn from "@/assets/images/icons/microphone_btn.svg";
@@ -15,22 +14,35 @@ export default function VoiceMessage() {
     const router = useRouter();
 
     // 오디오 녹음 및 재생 상태 관리
-    const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
-    const [playbackInstance, setPlaybackInstance] = useState<Audio.Sound | null>(null); // 재생 상태 추가
-    const [recordingUri, setRecordingUri] = useState<string | null>(null); // 복사된 파일 경로 저장
+    const [recording, setRecording] = useState<Audio.Recording | null>(null);
+    const [playbackInstance, setPlaybackInstance] = useState<Audio.Sound | null>(null);
+    const [recordingUri, setRecordingUri] = useState<string | null>(null);
 
     // 녹음 상태
-    const [isRecording, setIsRecording] = useState(false); // 녹음 중 상태
+    const [isRecording, setIsRecording] = useState(false);
     const [recordingTime, setRecordingTime] = useState("-");
     const [recordingDuration, setRecordingDuration] = useState<number>(0);
-    const [isRecordingFinished, setIsRecordingFinished] = useState(false); // 녹음 완료 상태
+    const [isRecordingFinished, setIsRecordingFinished] = useState(false);
 
     // 권한 요청
     useEffect(() => {
         (async () => {
-            const { granted } = await Audio.requestPermissionsAsync();
-            if (!granted) {
-                Alert.alert("Permission Denied", "마이크 접근 권한이 필요합니다.");
+            try {
+                const { granted } = await Audio.requestPermissionsAsync();
+                if (!granted) {
+                    Alert.alert("Permission Denied", "마이크 접근 권한이 필요합니다.");
+                    return;
+                }
+
+                // 오디오 모드 설정
+                await Audio.setAudioModeAsync({
+                    allowsRecordingIOS: true, // iOS에서 녹음 활성화
+                    playsInSilentModeIOS: true, // 무음 모드에서도 재생 가능
+                });
+
+                console.log("오디오 모드 설정 완료");
+            } catch (error) {
+                console.error("오디오 모드 설정 실패:", error);
             }
         })();
     }, []);
@@ -55,15 +67,18 @@ export default function VoiceMessage() {
     const startRecording = async () => {
         try {
             console.log("녹음 시작");
-            setRecordingDuration(0); // 녹음 시간 초기화
-            setRecordingTime("-"); // 초기화
-            setIsRecordingFinished(false); // 녹음 완료 상태 초기화
-            setIsRecording(true); // 녹음 중 상태 설정
-            await recorder.record(); // 녹음 시작
+            setRecordingDuration(0);
+            setRecordingTime("-");
+            setIsRecordingFinished(false);
+
+            const { recording } = await Audio.Recording.createAsync(
+                Audio.RecordingOptionsPresets.HIGH_QUALITY
+            );
+            setRecording(recording);
+            setIsRecording(true);
         } catch (error) {
             console.error("녹음 시작 에러:", error);
             Alert.alert("녹음 시작 실패", "녹음을 시작할 수 없습니다.");
-            setIsRecording(false); // 녹음 중 상태 초기화
         }
     };
 
@@ -71,47 +86,44 @@ export default function VoiceMessage() {
     const stopRecording = async () => {
         try {
             console.log("녹음 중지");
-            await recorder.stop(); // 녹음 중지
-    
-            const uri = recorder.uri;
+            setIsRecording(false);
+            if (!recording) return;
+
+            await recording.stopAndUnloadAsync();
+            const uri = recording.getURI();
+
             if (!uri) {
                 throw new Error("녹음 파일 경로를 찾을 수 없습니다.");
             }
-    
+
             console.log("녹음 파일 기본 경로:", uri);
-    
-            // 녹음 파일을 DocumentDirectory로 복사
+
             const newUri = `${FileSystem.documentDirectory}recording.m4a`;
             await FileSystem.copyAsync({ from: uri, to: newUri });
             console.log("녹음 파일 새 경로:", newUri);
-    
-            setRecordingUri(newUri); // 복사된 파일 경로 저장
-            setIsRecording(false); // 녹음 중 상태 해제
-            setIsRecordingFinished(true); // 녹음 완료 상태 설정
+
+            setRecordingUri(newUri);
+            setIsRecordingFinished(true);
+            setRecording(null); // 녹음 객체 해제
         } catch (error) {
-            console.error("녹음 종료 에러:", error);
-            Alert.alert("녹음 종료 실패", "녹음을 종료할 수 없습니다.");
+            console.error("녹음 중지 에러:", error);
+            Alert.alert("녹음 중지 실패", "녹음을 중지할 수 없습니다.");
         }
-    };    
+    };
 
     // 녹음 재생
     const playRecording = async () => {
         if (recordingUri) {
             try {
                 console.log("녹음 재생");
-                // 이전 재생 객체 정리
                 if (playbackInstance) {
                     await playbackInstance.unloadAsync();
                 }
-    
-                // 새로운 재생 객체 생성
+
                 const { sound } = await Audio.Sound.createAsync({ uri: recordingUri });
                 setPlaybackInstance(sound);
-    
-                // 볼륨 설정 (최대 1.0)
-                await sound.setVolumeAsync(1.0); // 볼륨을 최대치로 설정
-    
-                // 재생 시작
+
+                await sound.setVolumeAsync(1.0);
                 await sound.playAsync();
             } catch (error) {
                 console.error("녹음 재생 에러:", error);
@@ -132,7 +144,6 @@ export default function VoiceMessage() {
     }, [playbackInstance]);
 
     const handleSendLetter = () => {
-        // SendingLetter 화면으로 이동
         router.push("/letter/sending_letter");
     };
 
@@ -149,10 +160,10 @@ export default function VoiceMessage() {
                     style={styles.button}
                     onPress={
                         isRecording
-                            ? stopRecording // 녹음 중지
+                            ? stopRecording
                             : isRecordingFinished
-                            ? playRecording // 재생
-                            : startRecording // 녹음 시작
+                            ? playRecording
+                            : startRecording
                     }
                 >
                     {isRecordingFinished ? (
@@ -196,9 +207,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: 243,
     },
-    button: {
-        
-    },
+    button: {},
     buttonText: {
         marginTop: 10,
         fontSize: 20,

@@ -18,7 +18,6 @@ import Memo from "@/assets/images/icons/white_memo.svg";
 import Calendar from "@/assets/images/icons/white_calendar.svg";
 import XBtn from "@/assets/images/icons/x_light.svg";
 import colors from "@/constants/colors";
-import { SendingAnimation } from "@/components/SendingAnimation";
 
 // 키보드 가려짐 현상 원인불명
 
@@ -43,6 +42,7 @@ export default function CheckSchedule({
     onClose,
     calculateDDay,
   }: CheckScheduleProps) {
+    const router = useRouter();
     const [isSending, setIsSending] = useState(false); // 전송 상태 관리
     const [inputValue, setInputValue] = useState(""); // TextInput 상태 관리
 
@@ -55,21 +55,9 @@ export default function CheckSchedule({
 
   // 전송 버튼 클릭 시
   const handleSend = () => {
-    // onClose();
-    setIsSending(true); // 전송 상태로 변경
+    onClose();
+    router.push("/letter/sending_letter");
   };
-
-  // 전송 중/완료 컴포넌트 렌더링
-  if (isSending) {
-      return (
-          <SendingAnimation
-              sendingMessage="편지 전달 중"
-              doneMessage1="000님의 따뜻한 한마디가"
-              doneMessage2="000님에게 전달되었어요!"
-              doneExtraMessage="00님에게 큰 힘이 되어줄꺼예요.{\n}다음에도 찾아와주세요."
-          />
-      );
-  }
 
   return (
     <TouchableWithoutFeedback

@@ -3,7 +3,10 @@ import colors from "@/constants/colors";
 
 import LoadingWhale from "@/assets/images/icons/loadingWhale.gif";
 import YellowCheck from "@/assets/images/icons/yellow_check.svg";
+import HeaderBar from "@/components/header_bar";
+
 import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 
 /**
  * 전송중 컴포넌트
@@ -18,17 +21,26 @@ export const SendingAnimation = ({
   doneMessage1,
   doneMessage2,
   doneExtraMessage,
+  headerbarMessage1,
+  headerbarMessage2,
 }: {
   sendingMessage: string;
   doneMessage1: string;
   doneMessage2: string;
   doneExtraMessage: string;
+  headerbarMessage1: string;
+  headerbarMessage2: string;
 }) => {
+  const router = useRouter();
+
   const SendingComponent = () => {
     return (
       <View style={sendingStyles.container}>
-        <Image source={LoadingWhale} style={sendingStyles.loadingImage} />
-        <Text style={sendingStyles.loadingText}>{sendingMessage}</Text>
+        <HeaderBar title={headerbarMessage1} />
+        <View style={sendingStyles.mainContainer}>
+          <Image source={LoadingWhale} style={sendingStyles.loadingImage} />
+          <Text style={sendingStyles.loadingText}>{sendingMessage}</Text>
+        </View>
       </View>
     );
   };
@@ -36,10 +48,13 @@ export const SendingAnimation = ({
   const DoneComponent = () => {
     return (
       <View style={doneStyles.container}>
-        <YellowCheck width={43.5} height={43.5} style={doneStyles.icon} />
-        <Text style={doneStyles.mainText}>{doneMessage1}</Text>
-        <Text style={doneStyles.mainText2}>{doneMessage2}</Text>
-        <Text style={doneStyles.subText}>{doneExtraMessage}</Text>
+        <HeaderBar title={headerbarMessage2} />
+        <View style={doneStyles.mainContainer}>
+          <YellowCheck width={43.5} height={43.5} style={doneStyles.icon} />
+          <Text style={doneStyles.mainText}>{doneMessage1}</Text>
+          <Text style={doneStyles.mainText2}>{doneMessage2}</Text>
+          <Text style={doneStyles.subText}>{doneExtraMessage}</Text>
+        </View>
       </View>
     );
   };
@@ -47,12 +62,24 @@ export const SendingAnimation = ({
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIndex(1);
-    }, 3000);
+    if (index === 0) {
+      // 전송중 화면 3초 후 완료 화면으로 이동
+      const timer = setTimeout(() => {
+        setIndex(1);
+      }, 3000);
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(timer);
+    }
+
+    if (index === 1) {
+      // 완료 화면 3초 후 홈 화면으로 이동
+      const timer = setTimeout(() => {
+        router.push("/(tabs)/home"); // 네비게이션으로 /home 이동
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [index]);
 
   switch (index) {
     default:
@@ -67,8 +94,12 @@ export const SendingAnimation = ({
 const sendingStyles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+  },
+  mainContainer: {
+    marginTop: 230,
+    alignItems: "center",
+    justifyContent: "center",
   },
   loadingImage: {
     width: 102.25,
@@ -85,8 +116,12 @@ const sendingStyles = StyleSheet.create({
 const doneStyles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+  },
+  mainContainer: {
+    marginTop: 198,
+    alignItems: "center",
+    justifyContent: "center",
   },
   icon: {},
   mainText: {

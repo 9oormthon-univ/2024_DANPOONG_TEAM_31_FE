@@ -148,6 +148,12 @@ export default function TabLayout() {
                 />
               ),
             }}
+            listeners={{
+              tabPress: (e) => {
+                // 항상 letter의 index.tsx로 이동
+                router.replace("/(tabs)/letter"); // 결과적으로는 한번 더 눌러야함
+              },
+            }}
           />
           <Tabs.Screen
             name="my"
