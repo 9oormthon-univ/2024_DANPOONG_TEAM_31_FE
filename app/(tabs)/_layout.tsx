@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Tabs, usePathname, useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -102,6 +103,13 @@ export default function TabLayout() {
                 />
               ),
             }}
+            listeners={{
+              tabPress: (e) => {
+                if (!pathname.endsWith("/schedule")) {
+                  router.push("/schedule"); // 원하는 경로로 이동
+                }
+              },
+            }}
           />
           <Tabs.Screen
             name="home"
@@ -151,7 +159,9 @@ export default function TabLayout() {
             listeners={{
               tabPress: (e) => {
                 // 항상 letter의 index.tsx로 이동
-                router.replace("/(tabs)/letter"); // 결과적으로는 한번 더 눌러야함
+                if (!pathname.endsWith("/letter")) {
+                  router.push("/letter"); // 원하는 경로로 이동
+                }
               },
             }}
           />

@@ -74,7 +74,7 @@ export const SendingAnimation = ({
     if (index === 1) {
       // 완료 화면 3초 후 홈 화면으로 이동
       const timer = setTimeout(() => {
-        router.push("/(tabs)/home"); // 네비게이션으로 /home 이동
+        router.dismissAll(); // 네비게이션으로 /home 이동
       }, 3000);
 
       return () => clearTimeout(timer);

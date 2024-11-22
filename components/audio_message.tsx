@@ -9,7 +9,6 @@ import {
 import colors from "@/constants/colors";
 import { BlurView } from 'expo-blur';
 
-import Heart from "@/assets/images/icons/letter_heart.svg";
 import EmptyHeart from "@/assets/images/icons/empty_heart.svg";
 import FillHeart from "@/assets/images/icons/fill_heart.svg";
 import PlayBtn from "@/assets/images/icons/play_btn.svg";
@@ -56,7 +55,6 @@ export default function AudioMessage({ visible, onClose }: AudioMessageProps) {
                 <View style={styles.modalContent}>
                     {/* Header */}
                     <View style={styles.header}>
-                        <Heart width={49.14} height={44.72} style={styles.topIcon} />
                         <Text style={styles.scheduleName}>일정이름</Text>
                         <View style={styles.devide}></View>
                     </View>
@@ -143,9 +141,6 @@ const styles = StyleSheet.create({
         width: 335,
         height: 95,
         alignItems: "center",
-    },
-    topIcon: {
-        position: "absolute",
     },
     scheduleName:{
         position: "absolute",

@@ -10,9 +10,11 @@ import HeaderBar from "@/components/header_bar";
 import { Picker } from "@react-native-picker/picker";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
+import { useFontStore } from '@/stores/fontStore';
 
 export default function Settings(){
     const router = useRouter();
+    const { selectedFont, setSelectedFont } = useFontStore();
     const [expandedSection, setExpandedSection] = useState<string | null>(null); // 열려있는 섹션 상태 관리
     const [dailyAlarm, setDailyAlarm] = useState(false); // 매일 알림 토글 상태
     const [letterAlarm, setLetterAlarm] = useState(true); // 편지 알림 토글 상태
@@ -28,8 +30,9 @@ export default function Settings(){
     const [selectedMinute, setSelectedMinute] = useState(0);
     const [confirmedTime, setConfirmedTime] = useState("");
 
-    // 폰트 선택 상태 관리
-    const [selectedFont, setSelectedFont] = useState("EFDiary");
+    const handleFontSelect = (fontId: string) => {
+        setSelectedFont(fontId); // Zustand 상태 업데이트
+    };
 
     // 알림음 선택 상태 관리
     const [selectedAlarmSound, setSelectedAlarmSound] = useState("알림음1");
@@ -58,10 +61,6 @@ export default function Settings(){
             style: { fontFamily: "JNEYunaRegular" },
         },
     ];
-
-    const handleFontSelect = (fontId: string) => {
-    setSelectedFont(fontId);
-    };
 
     // 알림음 목록
     const alarmSounds = [

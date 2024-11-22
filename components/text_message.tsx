@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Modal, TouchableOpacity } from "react-native";
 import colors from "@/constants/colors";
 import { BlurView } from "expo-blur";
+import { useFontStore } from "@/stores/fontStore";
 
-import Square from "@/assets/images/icons/letter_square.svg";
 import EmptyHeart from "@/assets/images/icons/empty_heart.svg";
 import FillHeart from "@/assets/images/icons/fill_heart.svg";
 import XBtn from "@/assets/images/icons/x_light.svg";
@@ -17,6 +17,7 @@ interface TextMessageProps {
 
 export default function ImgTextMessage({ visible, onClose }: TextMessageProps) {
   const [liked, setLiked] = useState(false); // 좋아요 상태 관리
+  const { selectedFont } = useFontStore(); // Zustand에서 선택된 폰트 가져오기
 
   const toggleLike = () => {
     setLiked((prev) => !prev); // 상태를 반전
@@ -40,7 +41,6 @@ export default function ImgTextMessage({ visible, onClose }: TextMessageProps) {
             <View style={styles.modalContent}>
               {/* Header */}
               <View style={styles.header}>
-                <Square width={29.84} height={29.84} style={styles.topIcon} />
                 <Text style={styles.scheduleName}>일정이름</Text>
                 <View style={styles.devide}></View>
               </View>
@@ -56,7 +56,7 @@ export default function ImgTextMessage({ visible, onClose }: TextMessageProps) {
                   )}
                 </TouchableOpacity>
                 <View style={styles.textContainer}>
-                  <Text style={styles.textMessage}>
+                  <Text style={[styles.textMessage, { fontFamily: selectedFont }]}>
                     내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.
                   </Text>
                 </View>
