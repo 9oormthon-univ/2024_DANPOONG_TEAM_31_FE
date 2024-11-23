@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import Edit from "@/assets/images/icons/edit-04.svg";
 import colors from "@/constants/colors";
-import { useMemoStore } from "@/stores/memo";
+import { useMemoStore } from "@/stores/memoStore";
 
 export const SelectMemoType = () => {
   const { type, setType } = useMemoStore();

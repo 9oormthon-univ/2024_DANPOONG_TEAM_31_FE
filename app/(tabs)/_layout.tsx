@@ -11,7 +11,7 @@ import My from "@/assets/images/icons/my.svg";
 
 import colors from "@/constants/colors";
 import { ReactNode } from "react";
-import { useMemoStore } from "@/stores/memo";
+import { useMemoStore } from "@/stores/memoStore";
 import { Background } from "@/components/Background";
 
 const TabComponent = ({

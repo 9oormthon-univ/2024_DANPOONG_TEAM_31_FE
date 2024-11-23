@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import CheckedBtn from "@/assets/images/icons/checked_btn.svg";
 import UncheckedBtn from "@/assets/images/icons/unchecked_btn.svg";
@@ -40,6 +40,10 @@ export const SettingsPage = () => {
   const toggleSection = (section: string) => {
     setExpandedSection((prev) => (prev === section ? null : section));
   };
+
+  useEffect(() => {
+    confirmTime();
+  }, [selectedAmPm, selectedHour, selectedMinute]);
 
   const confirmTime = () => {
     const formattedMinute = String(selectedMinute).padStart(2, "0");
@@ -88,20 +92,24 @@ export const SettingsPage = () => {
         onPress={() => toggleSection("pushTime")}
       >
         <Text style={styles.sectionTitle}>푸시 알림 시간대</Text>
-        {expandedSection === "pushTime" ? (
-          <UpArrow width={9} height={9} />
-        ) : (
-          <DownArrow width={9} height={9} />
-        )}
+
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 14.25 }}>
+          <Text style={{ color: colors.white, fontSize: 14, fontWeight: "500" }}>
+            {confirmedTime}
+          </Text>
+          {expandedSection === "pushTime" ? (
+            <UpArrow width={9} height={9} />
+          ) : (
+            <DownArrow width={9} height={9} />
+          )}
+        </View>
       </TouchableOpacity>
       {expandedSection === "pushTime" && (
         <View style={styles.sectionContent}>
-          {/* 선택된 시간 표시 */}
-          {confirmedTime && <Text style={styles.confirmedTime}>선택된 시간 - {confirmedTime}</Text>}
-
           {/* 타임 피커 */}
           <View style={styles.timePicker}>
             <Picker
+              itemStyle={{ color: colors.white }}
               selectedValue={selectedAmPm}
               style={styles.pickerColumn}
               onValueChange={(itemValue) => setSelectedAmPm(itemValue)}
@@ -111,6 +119,7 @@ export const SettingsPage = () => {
             </Picker>
 
             <Picker
+              itemStyle={{ color: colors.white }}
               selectedValue={selectedHour}
               style={styles.pickerColumn}
               onValueChange={(itemValue) => setSelectedHour(itemValue)}
@@ -121,6 +130,7 @@ export const SettingsPage = () => {
             </Picker>
 
             <Picker
+              itemStyle={{ color: colors.white }}
               selectedValue={selectedMinute}
               style={styles.pickerColumn}
               onValueChange={(itemValue) => setSelectedMinute(itemValue)}
@@ -130,11 +140,6 @@ export const SettingsPage = () => {
               ))}
             </Picker>
           </View>
-
-          {/* 시간 확인 버튼 */}
-          <TouchableOpacity style={styles.confirmButton} onPress={confirmTime}>
-            <Text style={styles.confirmText}>확인</Text>
-          </TouchableOpacity>
         </View>
       )}
 
