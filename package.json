@@ -5,8 +5,8 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint"
@@ -16,14 +16,21 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@react-native-community/datetimepicker": "8.2.0",
+    "@react-native-kakao/core": "^2.2.6",
+    "@react-native-kakao/user": "^2.2.6",
+    "@react-native-picker/picker": "2.9.0",
     "@react-navigation/bottom-tabs": "^7.0.6",
     "@tanstack/react-query": "^5.59.20",
+    "@types/qs": "^6.9.17",
     "axios": "^1.7.7",
     "expo": "^52.0.7",
     "expo-audio": "~0.2.3",
     "expo-av": "~15.0.1",
     "expo-blur": "^14.0.1",
+    "expo-build-properties": "~0.13.1",
     "expo-constants": "~17.0.3",
+    "expo-dev-client": "~5.0.3",
     "expo-file-system": "~18.0.3",
     "expo-font": "~13.0.1",
     "expo-image-picker": "~16.0.2",
@@ -33,6 +40,7 @@
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.3",
     "expo-web-browser": "~14.0.1",
+    "qs": "^6.13.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.2",
@@ -41,9 +49,9 @@
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.1.0",
     "react-native-web": "~0.19.10",
+    "react-native-webview": "13.12.2",
     "zustand": "^5.0.1",
-    "@react-native-community/datetimepicker": "8.2.0",
-    "@react-native-picker/picker": "2.9.0"
+    "react-native-svg": "15.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
