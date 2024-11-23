@@ -5,27 +5,39 @@ import KakaoLogin from "@/assets/images/icons/kakao_login.svg";
 import Ellipse from "@/assets/images/icons/Ellipse.svg";
 import BackgroundImg from "@/assets/images/background.svg";
 import HeaderBar from "@/components/header_bar";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import colors from "@/constants/colors";
 
 import { login, isLogined } from "@react-native-kakao/user";
 import { SettingsPage } from "@/components/SettingsPage";
 import { useAppStore } from "@/stores/appStore";
 import { api } from "@/modules/api";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function Login() {
   const router = useRouter();
 
-  const initKakao = async () => {
-    console.log("logged in");
+  const { setAccessToken, setRefreshToken } = useAuthStore();
 
-    login({
-      web: {
-        redirectUri: "http://15.164.29.113:8080/login/oauth2/code/kakao",
-      },
-    })
+  const initKakao = async () => {
+    console.log("logging in");
+
+    login()
       .then(async (result) => {
         console.log(result);
+
+        const { accessToken, refreshToken, profileImage } = await api
+          .post("/auth/kakao/login", undefined, {
+            headers: {
+              Authorization: `Bearer ${result.accessToken}`,
+            },
+          })
+          .then((res) => res.data);
+
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+
+        router.replace("/home");
       })
       .catch((e) => {
         console.log(JSON.stringify(e));
