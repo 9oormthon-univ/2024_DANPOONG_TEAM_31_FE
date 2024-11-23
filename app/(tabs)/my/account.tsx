@@ -35,9 +35,8 @@ export default function Account() {
       <View
         style={{
           position: "absolute",
-          left: "50%",
-          bottom: tabBarHeight + 20.08,
-          transform: "translate(-50%,0)",
+          alignSelf: "center",
+          bottom: 116.08,
         }}
       >
         <HeartWhaleWithShadow />
