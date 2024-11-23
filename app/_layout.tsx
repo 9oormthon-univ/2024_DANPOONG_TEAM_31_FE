@@ -7,7 +7,6 @@ import { useFonts } from "expo-font";
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-
   // 폰트 로드
   const [fontsLoaded] = useFonts({
     EFDiary: require("@/assets/fonts/EFDiary.ttf"),
@@ -27,6 +26,7 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen name="index" />
+            <Stack.Screen name="login" />
             <Stack.Screen name="(tabs)" />
           </Stack>
         </SafeAreaProvider>
