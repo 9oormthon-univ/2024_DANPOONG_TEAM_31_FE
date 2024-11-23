@@ -23,24 +23,23 @@ import colors from "@/constants/colors";
 
 // 일정 항목 타입 정의
 interface ScheduleItem {
-    id: number;
-    title: string;
-    date: string;
-    registrant: string;
-    memo?: string; // 메모는 선택적으로 포함
+  scheduleId: number;
+  title: string;
+  date: string;
+  author: string;
+  memo?: string;
+  dday: string;
 }
   
 // Props 타입 정의
 interface CheckScheduleProps {
     schedule: ScheduleItem | null; // schedule이 null일 수 있음
     onClose: () => void; // 닫기 함수
-    calculateDDay: (targetDate: string) => string; // D-Day 계산 함수
 }
 
 export default function CheckSchedule({
     schedule,
     onClose,
-    calculateDDay,
   }: CheckScheduleProps) {
     const router = useRouter();
     const [isSending, setIsSending] = useState(false); // 전송 상태 관리
@@ -85,7 +84,7 @@ export default function CheckSchedule({
                 </View>
                 <View style={styles.infoRow}>
                   <Text style={styles.infoLabel}>등록자</Text>
-                  <Text style={styles.infoValue}>{schedule.registrant}</Text>
+                  <Text style={styles.infoValue}>{schedule.author}</Text>
                 </View>
               </View>
               <View style={styles.dateContainer}>
@@ -99,11 +98,11 @@ export default function CheckSchedule({
                       <Text
                         style={[
                           styles.dDayText,
-                          calculateDDay(schedule.date) === "D-Day" &&
+                          schedule.dday === "0" &&
                             styles.dDayTextHighlight,
                         ]}
                       >
-                        {calculateDDay(schedule.date)}
+                        D-{schedule.dday}
                       </Text>
                     </View>
                     <Text style={styles.dateInfoValue}>{schedule.date}</Text>

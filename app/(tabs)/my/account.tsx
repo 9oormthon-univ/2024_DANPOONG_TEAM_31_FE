@@ -43,16 +43,33 @@ export default function Account() {
 
   //생년월일 변경
   const { mutate: editBirthdate } = useMutation({
-    mutationFn: () =>
+    mutationFn: (birthdate: string) =>
       api.put("/mypage/birthdate", undefined, { params: { birthdate: inputValue } }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/users/myInfo"] });
     },
   });
 
+  // 로그아웃
+  const { mutate: logout } = useMutation({
+    mutationFn: () =>
+      api.post("/api/mypage/logout", undefined, {
+        headers: { Authorization: `Bearer ${myInfo?.access_token}` },
+      }),
+    onSuccess: () => {
+      // 로그아웃 성공 시 리다이렉트
+      router.replace("/");
+    },
+  });
+
   const handleSave = () => {
     if (currentField === "nickname") editNickname();
-    if (currentField === "birthdate") editBirthdate();
+    if (currentField === "birthdate") {
+      // 입력된 생년월일을 2000.01.01 -> 2000-01-01 형식으로 변환
+      const formattedBirthdate = inputValue.replace(/\./g, "-");
+      console.log(formattedBirthdate);
+      editBirthdate(formattedBirthdate);
+    }
     setModalVisible(false);
   };
 
@@ -77,7 +94,7 @@ export default function Account() {
           value={myInfo?.birthday || "없음"}
           action={() => handleOpenModal("birthdate")}
         />
-        <Pressable>
+        <Pressable onPress={() => logout()}>
           <Row name="로그아웃" />
         </Pressable>
         <Pressable>
@@ -109,7 +126,7 @@ export default function Account() {
               style={styles.modalInput}
               value={inputValue}
               onChangeText={setInputValue}
-              placeholder={currentField === "nickname" ? "새 닉네임 입력" : "새 생년월일 입력"}
+              placeholder={currentField === "nickname" ? "새 닉네임 입력" : "2000.01.01 형식으로 입력해 주세요"}
             />
             <View style={styles.modalActions}>
               <Pressable style={styles.modalButton} onPress={() => setModalVisible(false)}>

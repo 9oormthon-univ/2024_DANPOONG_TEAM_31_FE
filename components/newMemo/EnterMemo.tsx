@@ -14,6 +14,7 @@ import { useState } from "react";
 import ChevronRight from "@/assets/images/icons/black_chevron-right.svg";
 import DarkblueEnter from "@/assets/images/icons/darkblue_enter.svg";
 import { useRouter } from "expo-router";
+import { useAuthStore } from "@/stores/authStore";
 
 export const EnterMemo = () => {
   const router = useRouter();
@@ -22,17 +23,81 @@ export const EnterMemo = () => {
 
   const [input, setInput] = useState("");
 
-  const send = ({ type, value }: { type: "emoji" | "message"; value?: string }): void => {
-    if (type === "emoji") {
-      // 기분 전송
-      console.log(value);
-    } else if (type === "message") {
-      // 메모 전송
-      console.log(input);
+  // Auth Store에서 accessToken 가져오기
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  const sendEmoji = async (emoji: string) => {
+    try {
+      // 쿼리 문자열에 emoji 추가 (URL 인코딩)
+      const encodedEmoji = encodeURIComponent(emoji);
+      const url = `http://15.164.29.113:8080/api/userStatus/emoji?emoji=${encodedEmoji}`;
+  
+      // 로그에 인코딩된 URL 출력
+      console.log("Encoded URL:", url);
+  
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // 저장된 토큰 사용
+          "Content-Type": "application/json",
+        },
+      });
+  
+      const contentType = response.headers.get("Content-Type");
+      if (!response.ok) {
+        throw new Error(`요청 실패: ${response.status}`);
+      }
+  
+      if (contentType && contentType.includes("application/json")) {
+        const result = await response.json();
+        console.log("이모지 전송 결과:", result);
+        router.push("/home/sending_memo");
+      } else {
+        const text = await response.text();
+        console.error("HTML 응답 내용:", text);
+        throw new Error("JSON 응답이 아님.");
+      }
+    } catch (error) {
+      console.error("이모지 전송 에러:", error);
     }
-    router.push("/home/sending_memo");
   };
 
+  const sendMemo = async (memoText: string) => {
+    try {
+      // 메모 텍스트를 URL 인코딩
+      const encodedMemo = encodeURIComponent(memoText);
+      const url = `http://15.164.29.113:8080/api/userStatus/memo?text=${encodedMemo}`;
+  
+      // 인코딩된 URL을 로그로 출력
+      console.log("Encoded URL:", url);
+  
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // 저장된 토큰 사용
+          "Content-Type": "application/json",
+        },
+      });
+  
+      const contentType = response.headers.get("Content-Type");
+      if (!response.ok) {
+        throw new Error(`요청 실패: ${response.status}`);
+      }
+  
+      if (contentType && contentType.includes("application/json")) {
+        const result = await response.json();
+        console.log("메모 전송 결과:", result);
+        router.push("/home/sending_memo"); // 성공 시 화면 이동
+      } else {
+        const text = await response.text();
+        console.error("HTML 응답 내용:", text);
+        throw new Error("JSON 응답이 아님.");
+      }
+    } catch (error) {
+      console.error("메모 전송 에러:", error);
+    }
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -47,22 +112,19 @@ export const EnterMemo = () => {
           {[
             { emoji: "🙂", name: "행복" },
             { emoji: "😗", name: "기쁨" },
-            { emoji: "🥲", name: "슬픈" },
+            { emoji: "🥲", name: "슬픔" },
             { emoji: "😐", name: "긴장" },
             { emoji: "😡", name: "화남" },
             { emoji: "🥰", name: "감동" },
             { emoji: "🫨", name: "놀람" },
           ].map((entry) => (
             <View key={entry.name} style={styles.emojiWrapper}>
-              <Pressable onPress={() => send({ type: "emoji", value: entry.name })}>
+              <Pressable onPress={() => sendEmoji(entry.name)}>
                 <Text style={styles.emoji}>{entry.emoji}</Text>
               </Pressable>
-              <TouchableOpacity
-                style={styles.emojiChip}
-                onPress={() => send({ type: "emoji", value: entry.name })}
-              >
+              <View style={styles.emojiChip}>
                 <Text style={styles.emojiChipLabel}>{entry.name}</Text>
-              </TouchableOpacity>
+              </View>
             </View>
           ))}
         </ScrollView>
@@ -77,7 +139,7 @@ export const EnterMemo = () => {
             placeholder="작성해주세요."
             placeholderTextColor={colors.blue_gray_46}
           />
-          <TouchableOpacity style={styles.enterIcon} onPress={() => send({ type: "message" })}>
+          <TouchableOpacity style={styles.enterIcon} onPress={() => sendMemo(input)}>
             <DarkblueEnter />
           </TouchableOpacity>
         </View>

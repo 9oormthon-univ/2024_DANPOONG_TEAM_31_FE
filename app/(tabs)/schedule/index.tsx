@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from "react-native";
 import PlusBtn from "@/assets/images/icons/plus_button.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
@@ -7,27 +7,62 @@ import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
 import CheckSchedule from "./check_schedule";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/modules/api";
+import { useAuthStore } from "@/stores/authStore";
 
 // 일정 항목의 타입 정의
 interface ScheduleItem {
-  id: number;
+  scheduleId: number;
   title: string;
   date: string;
-  registrant: string;
-  memo?: string; // 메모는 선택적으로 포함
+  author: string;
+  memo?: string;
+  dday: string;
 }
 
 export default function Schedule() {
-  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleItem | null>(null); // 선택된 일정
+  const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleItem | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  // 임시 데이터
-  const schedules = [
-    { id: 1, title: "일정명1", date: "24.11.19", registrant: "고래" },
-    { id: 2, title: "일정명2", date: "24.11.20", registrant: "상어" },
-    { id: 3, title: "일정명3", date: "24.12.01", registrant: "거북이" },
-    { id: 4, title: "일정명4", date: "24.12.10", registrant: "물고기" },
-  ];
   const router = useRouter();
+
+  // Auth Store에서 accessToken 가져오기
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  // 일정 전체 조회
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      if (!accessToken) {
+        setError("로그인이 필요합니다."); // 토큰이 없으면 에러 처리
+        return;
+      }
+
+      try {
+        const response = await fetch("http://15.164.29.113:8080/api/schedule/all", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: ScheduleItem[] = await response.json();
+        console.log("API 응답 데이터:", data);
+        setSchedules(data);
+      } catch (err: any) {
+        console.error("일정 전체 조회 실패:", err);
+        setError(err.message);
+      }
+    };
+
+    fetchSchedules();
+  }, [accessToken]);
 
   const openModal = (schedule: ScheduleItem) => {
     setSelectedSchedule(schedule);
@@ -39,33 +74,12 @@ export default function Schedule() {
     setSelectedSchedule(null);
   };
 
-  // 현재 날짜 가져오기
-  const today = new Date();
-
-  // D-Day 계산 함수
-  const calculateDDay = (targetDate: string) => {
-    // 날짜 형식 변환: "24.11.19" -> "2024-11-19"
-    const formattedDate = `20${targetDate.split(".").join("-")}`;
-
-    // 한국 시간(KST) 기준으로 targetDate 생성
-    const target = new Date(`${formattedDate}T00:00:00+09:00`);
-
-    // 오늘 날짜 (한국 시간 기준)
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // UTC 시간 제거 후 자정 기준 한국 시간
-
-    // 날짜 차이 계산 (밀리초 단위 -> 일 단위)
-    const diff = Math.ceil((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-    return diff === 0 ? "D-Day" : `D-${diff}`;
-  };
-
   return (
     <View style={styles.container}>
       <HeaderBar title="등록된 일정을 확인해보세요." />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {schedules.map((schedule) => (
-          <TouchableOpacity key={schedule.id} onPress={() => openModal(schedule)}>
+          <TouchableOpacity key={schedule.scheduleId} onPress={() => openModal(schedule)}>
             <View style={styles.scheduleItem}>
               <View style={styles.scheduleInfo}>
                 <View style={styles.iconCircle}></View>
@@ -74,7 +88,7 @@ export default function Schedule() {
                     {schedule.title}
                   </Text>
                   <Text style={styles.scheduleDetails}>
-                    {schedule.date} {schedule.registrant}
+                    {schedule.date} {schedule.author}
                   </Text>
                 </View>
               </View>
@@ -83,10 +97,10 @@ export default function Schedule() {
                   <Text
                     style={[
                       styles.dDayText,
-                      calculateDDay(schedule.date) === "D-Day" && styles.dDayTextHighlight,
+                      schedule.dday === "0" && styles.dDayTextHighlight,
                     ]}
                   >
-                    {calculateDDay(schedule.date)}
+                    D-{schedule.dday}
                   </Text>
                 </View>
                 <RightArrow width={4.5} height={9} />
@@ -105,11 +119,9 @@ export default function Schedule() {
       <HeartWhale width={53} height={40.92} style={styles.heartWhale} />
 
       <Modal visible={modalVisible} transparent={true} animationType="fade">
-        <CheckSchedule
-          schedule={selectedSchedule}
-          onClose={closeModal}
-          calculateDDay={calculateDDay} // D-Day 계산 함수 전달
-        />
+      {selectedSchedule && (
+        <CheckSchedule schedule={selectedSchedule} onClose={closeModal} />
+      )}
       </Modal>
     </View>
   );

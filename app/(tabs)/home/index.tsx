@@ -35,10 +35,30 @@ import ImgTextMessage from "@/components/imgtext_message";
 import TextMessage from "@/components/text_message";
 import { SelectMemoType } from "@/components/newMemo/SelectMemoType";
 import { EnterMemo } from "@/components/newMemo/EnterMemo";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/modules/api";
+
+const bubblesData = [
+  { emoji: "🙂", name: "행복", message: "행복핑", person: "김현서" },
+  { emoji: "😗", name: "기쁨", message: "끼끼핑", person: "서현은" },
+  { emoji: "🥲", name: "슬픔", message: "ㅠㅠㅜㅠ슬퍼", person: "허윤호" },
+  { emoji: "😐", name: "긴장", message: "긴장하지 말고 자신있게!", person: "김현서" },
+  { emoji: "😡", name: "화남", message: "왜저래", person: "서현은" },
+  { emoji: "🥰", name: "감동", message: "사랑해", person: "허윤호" },
+  { emoji: "🫨", name: "놀람", message: "헛헛", person: "김현서" },
+];
 
 export default function Home() {
   const { type, setType } = useMemoStore();
   const insets = useSafeAreaInsets();
+
+  const queryClient = useQueryClient();
+
+  // 유저 정보
+  const { data: myInfo } = useQuery({
+    queryFn: () => api.get("/users/myInfo").then((res) => res.data),
+    queryKey: ["/users/myInfo"],
+  });
 
   const [isModalVisible, setIsModalVisible] = useState(false); // 모달 상태 관리
 
@@ -121,7 +141,9 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <HeaderBar title="민정님, 안녕하세요" />
+      <HeaderBar
+      title={`${myInfo?.nickname ?? "사용자"}님, 안녕하세요`}
+    />
       {/* <View style={styles.separator}></View> */}
       <View style={styles.schrollviewContainer}>
         <ScrollView
@@ -159,7 +181,7 @@ export default function Home() {
                     ]}
                   >
                     <Text style={styles.speechBubbleText}>
-                      내용입니다.내용입니다.내용입니다.
+                      오늘도 화이팅!!! 상쾌하고 맑은 하루~~
                     </Text>
                   </Animated.View>
                 </View>
@@ -256,7 +278,7 @@ const styles = StyleSheet.create({
   textSpeechBubble: {
     position: "absolute",
     width: 85,
-    height: 70,
+    height: 60,
     backgroundColor: colors.white,
     borderRadius: 12,
     top: 45,
