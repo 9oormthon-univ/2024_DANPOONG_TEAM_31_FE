@@ -25,27 +25,21 @@ export default function ImgTextMessage({ visible, onClose }: TextMessageProps) {
 
   return (
     <View style={styles.container}>
-      {/* Modal */}
       <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-        {/* Background Blur */}
         <BlurView style={styles.modalOverlay} intensity={10} tint="light">
-          {/* 모달 닫기 */}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <XBtnBack width={97} height={62} style={styles.closeButtonBack} />
             <XBtn width={24} height={24} style={styles.closeButtonIcon} />
           </TouchableOpacity>
 
-          {/* 모달 내용 */}
           <View style={styles.modalContentWrapper}>
-            <LetterBg style={styles.modalBackground} /> {/* SVG 배경 */}
+            <LetterBg style={styles.modalBackground} />
             <View style={styles.modalContent}>
-              {/* Header */}
               <View style={styles.header}>
                 <Text style={styles.scheduleName}>일정이름</Text>
                 <View style={styles.devide}></View>
               </View>
 
-              {/* 메세지 본문 */}
               <View style={styles.body}>
                 <Text style={styles.toText}>To. 거북이</Text>
                 <TouchableOpacity onPress={toggleLike} style={styles.likeIcon}>
@@ -63,7 +57,6 @@ export default function ImgTextMessage({ visible, onClose }: TextMessageProps) {
                 <Text style={styles.fromText}>From. 토끼</Text>
               </View>
 
-              {/* 하단 보관하기 버튼 */}
               <View style={styles.footer}>
                 <Text style={styles.footerText}>보관하기</Text>
               </View>

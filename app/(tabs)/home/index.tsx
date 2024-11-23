@@ -111,61 +111,58 @@ export default function Home() {
       <HeaderBar title="민정님, 안녕하세요" />
 
       <View style={styles.schrollviewContainer}>
-
-      
-
-      <ScrollView
-        style={styles.cloudsScrollView}
-        contentContainerStyle={styles.cloudsScrollViewContent}
-        horizontal // 가로 스크롤 활성화
-        showsHorizontalScrollIndicator={false} // 스크롤바 숨기기
-      >
-      {bubbles.map((bubble) => (
-        <TouchableOpacity
-          key={bubble.id}
-          style={styles.cloud}
-          onPress={() => handleCloudPress(bubble.id)} // 클릭 이벤트 처리
+        <ScrollView
+          style={styles.cloudsScrollView}
+          contentContainerStyle={styles.cloudsScrollViewContent}
+          horizontal // 가로 스크롤 활성화
+          showsHorizontalScrollIndicator={false} // 스크롤바 숨기기
         >
-            <View style={styles.cloudContainer}>
-              <Cloud width={51} height={31} style={styles.cloudImg}/>
-              <View style={styles.speechBubbleContainer}>
-                {/* Speech Bubble 크기 애니메이션 */}
-                <Animated.View
-                  style={[
-                    styles.speechBubble,
-                    {
-                      width: bubble.width,
-                      height: bubble.height,
-                      transform: [
-                        { translateX: bubble.position.x },
-                        { translateY: bubble.position.y },
-                      ],
-                    },
-                  ]}
-                />
-                <Triangle width={6} height={8} style={styles.triangle}/>
-                <Animated.View style={{ opacity: bubble.opacity }}>
-                  <DarkBlueBubble width={12} height={12} style={styles.speechBubbleImg} />
-                </Animated.View>
-                <Animated.Text
-                style={[
-                  styles.speechBubbleText,
-                  {
-                    opacity: bubble.opacity.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [1, 0], // DarkBlueBubble이 사라지면 텍스트가 나타남
-                    }),
-                  },
-                ]}
-              >
-                내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.
-              </Animated.Text>
+          {bubbles.map((bubble) => (
+            <TouchableOpacity
+              key={bubble.id}
+              style={styles.cloud}
+              onPress={() => handleCloudPress(bubble.id)} // 클릭 이벤트 처리
+            >
+              <View style={styles.cloudContainer}>
+                <Cloud width={51} height={31} style={styles.cloudImg} />
+                <View style={styles.speechBubbleContainer}>
+                  {/* Speech Bubble 크기 애니메이션 */}
+                  <Animated.View
+                    style={[
+                      styles.speechBubble,
+                      {
+                        width: bubble.width,
+                        height: bubble.height,
+                        transform: [
+                          { translateX: bubble.position.x },
+                          { translateY: bubble.position.y },
+                        ],
+                      },
+                    ]}
+                  />
+                  <Triangle width={6} height={8} style={styles.triangle} />
+                  <Animated.View style={{ opacity: bubble.opacity }}>
+                    <DarkBlueBubble width={12} height={12} style={styles.speechBubbleImg} />
+                  </Animated.View>
+                  <Animated.Text
+                    style={[
+                      styles.speechBubbleText,
+                      {
+                        opacity: bubble.opacity.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, 0], // DarkBlueBubble이 사라지면 텍스트가 나타남
+                        }),
+                      },
+                    ]}
+                  >
+                    내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.
+                  </Animated.Text>
+                </View>
               </View>
-            </View>
-            <Text style={styles.cloudName}>이름이</Text>
+              <Text style={styles.cloudName}>이름이</Text>
             </TouchableOpacity>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
       </View>
       <View style={styles.separator}></View>
       <View style={styles.cloudsBoundary}>{CloudLetters}</View>
@@ -196,9 +193,7 @@ export default function Home() {
           </Pressable>
         </View>
       </Modal>
-      {/* <AudioMessage visible={isModalVisible} onClose={closeModal} /> AudioMessage 모달 */}
-      {/* <ImgTextMessage visible={isModalVisible} onClose={closeModal} /> ImgTextMessage 모달 */}
-      <TextMessage visible={isModalVisible} onClose={closeModal} /> {/* TextMessage 모달 */}
+      <TextMessage visible={isModalVisible} onClose={closeModal} />
     </View>
   );
 }
@@ -259,10 +254,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 45,
     height: 25,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.black,
     textAlign: "center",
-    fontSize :6,
+    fontSize: 6,
     top: -10,
     left: -21,
   },
