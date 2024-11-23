@@ -1,32 +1,42 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import EmptyProfil from "@/assets/images/icons/empty_profil.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import HeaderBar from "@/components/header_bar";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/modules/api";
+import { LetterContext } from "@/contexts/LetterContext";
+
+interface FamilyMembersData {
+  familyId: number;
+  members: {
+    userId: number;
+    nickname: string;
+    email: string;
+    image?: string;
+  }[];
+}
 
 export default function Letter() {
   const router = useRouter();
-  // 임시 데이터 배열
-  const users = [
-    { id: 1, name: "강민서", image: null },
-    { id: 2, name: "김현서", image: null },
-    { id: 3, name: "허윤호", image: null },
-    { id: 4, name: "조민정", image: null },
-  ];
 
-  // 선택된 사용자 상태 관리
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const { data: familyMembers } = useQuery<FamilyMembersData>({
+    queryFn: () => api.get("/family/members").then((res) => res.data),
+    queryKey: ["/family/members"],
+  });
+
+  const [letter, setLetter] = useContext(LetterContext);
 
   // 사용자 선택 처리 함수
   const handleUserSelect = (id: number) => {
-    setSelectedUser(id);
+    setLetter?.({ receiverId: id });
   };
 
   // 페이지 이동 처리 함수
   const handleNavigate = () => {
-    if (selectedUser) {
+    if (letter?.receiverId) {
       router.push(`/letter/select`);
     } else {
       alert("프로필을 선택해 주세요."); // 프로필이 선택되지 않았을 때 경고 표시
@@ -37,20 +47,23 @@ export default function Letter() {
     <View style={styles.container}>
       <HeaderBar title="누구에게 메세지를 보낼까요?" />
       <View style={styles.profilesContainer}>
-        {users.map((user) => (
+        {familyMembers?.members?.map((member) => (
           <TouchableOpacity
-            key={user.id}
-            style={[styles.profileContainer, selectedUser === user.id && styles.selectedProfile]}
-            onPress={() => handleUserSelect(user.id)}
+            key={member?.userId}
+            style={[
+              styles.profileContainer,
+              letter?.receiverId === member?.userId && styles.selectedProfile,
+            ]}
+            onPress={() => handleUserSelect(member?.userId)}
           >
             <View style={styles.shadowContainer}>
-              {user.image ? (
-                <Image source={{ uri: user.image }} style={styles.profileImage} />
+              {member?.image ? (
+                <Image source={{ uri: member?.image }} style={styles.profileImage} />
               ) : (
                 <EmptyProfil width={100} height={100} />
               )}
             </View>
-            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.userName}>{member?.nickname}</Text>
           </TouchableOpacity>
         ))}
       </View>

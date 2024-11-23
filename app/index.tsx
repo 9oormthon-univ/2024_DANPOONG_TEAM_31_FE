@@ -13,11 +13,13 @@ import { useAppStore } from "@/stores/appStore";
 import { api } from "@/modules/api";
 import { useAuthStore } from "@/stores/authStore";
 import { initializeKakaoSDK } from "@react-native-kakao/core";
+import { useUserStore } from "@/stores/userStore";
 
 export default function Login() {
   const router = useRouter();
 
   const { setAccessToken, setRefreshToken } = useAuthStore();
+  const { updateUser } = useUserStore();
 
   useEffect(() => {
     initializeKakaoSDK("d6f138e3695774e7f06cfb1c569b29c9");
@@ -30,7 +32,7 @@ export default function Login() {
       .then(async (result) => {
         console.log(result);
 
-        const { accessToken, refreshToken, profileImage } = await api
+        const { accessToken, refreshToken, familyId } = await api
           .post("/auth/kakao/login", undefined, {
             headers: {
               Authorization: `Bearer ${result.accessToken}`,
@@ -38,8 +40,11 @@ export default function Login() {
           })
           .then((res) => res.data);
 
+        console.log(familyId);
+
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
+        updateUser({ familyId });
 
         router.replace("/home");
       })
