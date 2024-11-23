@@ -15,6 +15,7 @@ import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import LeftArrow from "@/assets/images/icons/left_arrow.svg";
 import colors from "@/constants/colors";
 import { BlurView } from 'expo-blur';
+import { useRouter } from "expo-router";
 
 interface Message {
     id: number;
@@ -33,15 +34,17 @@ export default function LetterboxDate({ visible, onClose }: LetterboxDateProps) 
     const [page, setPage] = useState(1); // 현재 페이지
     const [popupVisible, setPopupVisible] = useState(false); // 팝업 상태
     const fadeAnim = new Animated.Value(1); // 팝업 애니메이션
+    const router = useRouter();
+
 
     // 메시지 데이터
     const [messages, setMessages] = useState<Message[]>([
-        { id: 1, type: "편지", date: "24.11.06", sender: "보낸사람", liked: false },
-        { id: 2, type: "음성", date: "24.11.06", sender: "보낸사람", liked: false },
-        { id: 3, type: "편지", date: "24.11.07", sender: "보낸사람", liked: false },
-        { id: 4, type: "음성", date: "24.11.08", sender: "보낸사람", liked: false },
-        { id: 5, type: "편지", date: "24.11.09", sender: "보낸사람", liked: false },
-        { id: 6, type: "음성", date: "24.11.10", sender: "보낸사람", liked: false },
+        { id: 1, type: "편지", date: "24.11.06", sender: "김현서", liked: false },
+        { id: 2, type: "음성", date: "24.11.06", sender: "허윤호", liked: false },
+        { id: 3, type: "편지", date: "24.11.06", sender: "허윤호", liked: false },
+        { id: 4, type: "음성", date: "24.11.06", sender: "서현은", liked: false },
+        { id: 5, type: "편지", date: "24.11.06", sender: "허윤호", liked: false },
+        { id: 6, type: "음성", date: "24.11.06", sender: "서현은", liked: false },
     ]);
 
     const ITEMS_PER_PAGE = 5; // 한 페이지에 표시할 메시지 개수
@@ -135,7 +138,9 @@ export default function LetterboxDate({ visible, onClose }: LetterboxDateProps) 
                                             <EmptyHeart width={18} height={18} />
                                         )}
                                     </TouchableOpacity>
-                                    <RightArrow width={4.14} height={8.3} style={styles.messageArrow}/>
+                                    <TouchableOpacity>
+                                        <RightArrow width={4.14} height={8.3} style={styles.messageArrow}/>
+                                    </TouchableOpacity>
                                 </View>
                             ))}
                         </View>
@@ -224,7 +229,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#E8ECFF",
         width: 36,
         height: 36,
-        borderRadius: "50%",
+        borderRadius: 18,
         marginLeft: 9.19,
     },
     messageTextContainer: {

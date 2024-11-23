@@ -16,6 +16,7 @@ import BackgroundImg from "@/assets/images/background.svg";
 import HeaderBar from "@/components/header_bar";
 import LetterboxDate from "@/app/letterbox/letterbox_date";
 import colors from "@/constants/colors";
+import { useRouter } from "expo-router";
 
 interface MessageData {
     [key: string]: {
@@ -46,10 +47,10 @@ export default function LetterboxCalendar() {
     const [selectedDate, setSelectedDate] = useState<string | null>(null); // 선택된 날짜
 
     const heartDates = [
-        { date: "11.10", label: "거북이" },
-        { date: "11.12", label: "거북이" },
-        { date: "11.20", label: "토끼" },
-        { date: "11.25", label: "고래" },
+        { date: "11.01", label: "서현은" },
+        { date: "11.02", label: "허윤호" },
+        { date: "11.16", label: "허윤호" },
+        { date: "11.18", label: "김현서" },
     ];
 
     // 샘플 메시지 데이터
@@ -58,7 +59,7 @@ export default function LetterboxCalendar() {
         "2024-11-02": { messages: 1 },
         "2024-11-03": { messages: 5 },
         "2024-11-05": { messages: 2 },
-        "2024-11-06": { messages: 3 },
+        "2024-11-06": { messages: 6 },
         "2024-11-07": { messages: 1 },
         "2024-11-15": { messages: 4 },
         "2024-11-16": { messages: 2 },
@@ -66,10 +67,6 @@ export default function LetterboxCalendar() {
         "2024-11-20": { messages: 1 },
         "2024-11-21": { messages: 3 },
         "2024-11-22": { messages: 2 },
-        "2024-11-25": { messages: 2 },
-        "2024-11-27": { messages: 1 },
-        "2024-11-28": { messages: 5 },
-        "2024-11-29": { messages: 4 },
     };
 
     // 월 변경 핸들러
