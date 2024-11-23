@@ -12,20 +12,30 @@ import { login, isLogined } from "@react-native-kakao/user";
 import { SettingsPage } from "@/components/SettingsPage";
 import { useAppStore } from "@/stores/appStore";
 import { api } from "@/modules/api";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function Login() {
   const router = useRouter();
 
+  const { setAccessToken, setRefreshToken } = useAuthStore();
+
   const initKakao = async () => {
     console.log("logged in");
 
-    login({
-      web: {
-        redirectUri: "http://15.164.29.113:8080/login/oauth2/code/kakao",
-      },
-    })
+    login()
       .then(async (result) => {
         console.log(result);
+
+        const { accessToken, refreshToken, profileImage } = await api
+          .post("/auth/kakao/login", undefined, {
+            headers: {
+              Authorization: `Bearer ${result.accessToken}`,
+            },
+          })
+          .then((res) => res.data);
+
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
       })
       .catch((e) => {
         console.log(JSON.stringify(e));
