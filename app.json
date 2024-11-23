@@ -22,10 +22,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS"
-      ]
+      "permissions": ["android.permission.RECORD_AUDIO", "android.permission.MODIFY_AUDIO_SETTINGS"]
     },
     "web": {
       "bundler": "metro",
@@ -35,15 +32,12 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-audio",
       "expo-build-properties",
       [
         "expo-build-properties",
         {
           "android": {
-            "extraMavenRepos": [
-              "https://devrepo.kakao.com/nexus/content/groups/public/"
-            ],
+            "extraMavenRepos": ["https://devrepo.kakao.com/nexus/content/groups/public/"],
             "minSdkVerson": 26,
             "newArchEnabled": true
           },
