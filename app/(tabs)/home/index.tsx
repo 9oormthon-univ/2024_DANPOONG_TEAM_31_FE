@@ -29,6 +29,7 @@ import CloudLetter from "@/assets/images/icons/Cloud_letters_big.svg";
 import Whale from "@/assets/images/icons/mainWhale.svg";
 import SpeechBubbleWithMail from "@/assets/images/icons/speech_bubble_w_mail.svg";
 import X from "@/assets/images/icons/x_light.svg";
+import Devide from "@/assets/images/icons/devide.svg";
 import AudioMessage from "@/components/audio_message";
 import ImgTextMessage from "@/components/imgtext_message";
 import TextMessage from "@/components/text_message";
@@ -62,36 +63,48 @@ export default function Home() {
   }, []);
 
   // 각 구름의 상태를 객체로 저장
-  const bubbles = Array.from({ length: 8 }, (_, i) => ({
-    id: i,
-    opacitySpeech: useRef(new Animated.Value(1)).current, // SpeechBubble 투명도
-    opacityText: useRef(new Animated.Value(0)).current, // textSpeechBubble 투명도
-  }));
+  const bubbles = useRef(
+    Array.from({ length: 8 }, () => ({
+      opacitySpeech: new Animated.Value(1), // SpeechBubble 투명도
+      opacityText: new Animated.Value(0), // textSpeechBubble 투명도
+      translateYText: new Animated.Value(-10), // textSpeechBubble의 Y 위치 (고정)
+    }))
+  ).current;
 
   const handleCloudPress = (id: number) => {
-    // 클릭 시 바로 상태를 갱신
     setSelectedCloud(id);
   
-    // SpeechBubble 사라지고 textSpeechBubble 나타남
     Animated.sequence([
-      // SpeechBubble 투명도 줄임
+      // SpeechBubble 사라짐
       Animated.timing(bubbles[id].opacitySpeech, {
         toValue: 0, // SpeechBubble 사라짐
         duration: 300,
-        useNativeDriver: true,
+        useNativeDriver: true, // opacity는 네이티브에서 처리 가능
       }),
-      // textSpeechBubble 투명도 증가
-      Animated.timing(bubbles[id].opacityText, {
-        toValue: 1, // textSpeechBubble 나타남
-        duration: 300,
-        useNativeDriver: true,
-      }),
+      // textSpeechBubble 나타남
+      Animated.parallel([
+        Animated.timing(bubbles[id].opacityText, {
+          toValue: 1, // textSpeechBubble 나타남
+          duration: 300,
+          useNativeDriver: true, // opacity는 네이티브에서 처리 가능
+        }),
+        Animated.timing(bubbles[id].translateYText, {
+          toValue: 0, // Y 위치 고정 (위 → 원래 위치)
+          duration: 300,
+          useNativeDriver: true, // translateY는 네이티브에서 처리 가능
+        }),
+      ]),
       // 3초 대기
       Animated.delay(3000),
-      // textSpeechBubble 사라지고 SpeechBubble 나타남
+      // textSpeechBubble 사라지고 SpeechBubble 다시 나타남
       Animated.parallel([
         Animated.timing(bubbles[id].opacityText, {
           toValue: 0, // textSpeechBubble 사라짐
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bubbles[id].translateYText, {
+          toValue: -20, // 다시 위로 이동
           duration: 300,
           useNativeDriver: true,
         }),
@@ -102,14 +115,14 @@ export default function Home() {
         }),
       ]),
     ]).start(() => {
-      // 애니메이션이 끝난 후 상태 초기화
-      setSelectedCloud(null);
+      setSelectedCloud(null); // 상태 초기화
     });
-  };
+  };  
 
   return (
     <View style={styles.container}>
       <HeaderBar title="민정님, 안녕하세요" />
+      {/* <View style={styles.separator}></View> */}
       <View style={styles.schrollviewContainer}>
         <ScrollView
           style={styles.cloudsScrollView}
@@ -117,11 +130,11 @@ export default function Home() {
           horizontal // 가로 스크롤 활성화
           showsHorizontalScrollIndicator={false} // 스크롤바 숨기기
         >
-          {bubbles.map((bubble) => (
+          {bubbles.map((bubble, index) => (
             <TouchableOpacity
-              key={bubble.id}
+              key={index}
               style={styles.cloud}
-              onPress={() => handleCloudPress(bubble.id)} // 클릭 이벤트 처리
+              onPress={() => handleCloudPress(index)}
             >
               <View style={styles.cloudContainer}>
                 <Cloud width={51} height={31} style={styles.cloudImg} />
@@ -138,8 +151,11 @@ export default function Home() {
                   {/* textSpeechBubble */}
                   <Animated.View
                     style={[
-                      { opacity: bubble.opacityText },
                       styles.textSpeechBubble,
+                      {
+                        opacity: bubble.opacityText, // 투명도
+                        transform: [{ translateY: bubble.translateYText }], // 위에서 아래로 이동
+                      },
                     ]}
                   >
                     <Text style={styles.speechBubbleText}>
@@ -153,7 +169,7 @@ export default function Home() {
           ))}
         </ScrollView>
       </View>
-      <View style={styles.separator}></View>
+      <Devide style={styles.Devide}/>
       <View style={styles.cloudsBoundary}>{CloudLetters}</View>
       <View style={{ position: "absolute", bottom: insets.bottom + 34 + 115.93, left: 155 }}>
         <SpeechBubbleWithMail style={{ position: "absolute", top: -44, right: -11 }} />
@@ -190,9 +206,10 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
   },
   schrollviewContainer: {
-    height: "14%",
+    height: "18%",
   },
   cloudsScrollView: {
     width: "88%",
@@ -238,23 +255,24 @@ const styles = StyleSheet.create({
   },
   textSpeechBubble: {
     position: "absolute",
-    width: 66,
-    height: 45,
+    width: 85,
+    height: 70,
     backgroundColor: colors.white,
     borderRadius: 12,
-    top: 43,
-    left: -30,
+    top: 45,
+    left: -38.5,
   },
   speechBubbleText: {
     position: "absolute",
-    width: 58,
-    height: 40,
+    width: 65,
+    height: 45,
     fontWeight: "500",
     color: colors.black,
     textAlign: "center",
     fontSize: 10,
-    top: 5,
-    left: 3,
+    top: 12,
+    left: 10,
+    // backgroundColor: colors.light_yellow,
   },
   cloudName: {
     alignSelf: "center",
@@ -264,11 +282,18 @@ const styles = StyleSheet.create({
     marginTop: 2,
     zIndex: -5,
   },
-  separator: {
-    marginHorizontal: 20,
-    height: 1,
-    backgroundColor: colors.grayA78,
+  Devide: {
+    alignSelf: "center",
+    position: "absolute",
+    top: 195,
+    zIndex: -5,
   },
+  // separator: {
+  //   marginTop: 23,
+  //   marginHorizontal: 20,
+  //   height: 10,
+  //   backgroundColor: colors.grayA78,
+  // },
   cloudsBoundary: {
     flex: 1,
     position: "relative",
