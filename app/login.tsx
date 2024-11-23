@@ -11,24 +11,25 @@ import colors from "@/constants/colors";
 import { login, isLogined } from "@react-native-kakao/user";
 import { SettingsPage } from "@/components/SettingsPage";
 import { useAppStore } from "@/stores/appStore";
+import { api } from "@/modules/api";
 
 export default function Login() {
   const router = useRouter();
 
   const initKakao = async () => {
-    if (await isLogined()) {
-      console.log("logged in");
-    } else {
-      login({
-        web: {
-          redirectUri: "http://15.164.29.113:8080/login/oauth2/code/kakao",
-        },
+    console.log("logged in");
+
+    login({
+      web: {
+        redirectUri: "http://15.164.29.113:8080/login/oauth2/code/kakao",
+      },
+    })
+      .then(async (result) => {
+        console.log(result);
       })
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((e) => console.log(e));
-    }
+      .catch((e) => {
+        console.log(JSON.stringify(e));
+      });
   };
 
   const { showSettingsOnLogin } = useAppStore();

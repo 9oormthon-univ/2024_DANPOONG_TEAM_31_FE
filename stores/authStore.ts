@@ -1,17 +1,17 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface AuthState {
-  accessToken: string | null;
-  refreshToken: string | null;
+  accessToken: string | undefined;
+  refreshToken: string | undefined;
   setAccessToken: (token: string) => void;
   setRefreshToken: (token: string) => void;
-  clearTokens: () => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  accessToken: null,
-  refreshToken: null,
+  accessToken: undefined,
+  refreshToken: undefined,
   setAccessToken: (token: string) => set({ accessToken: token }),
   setRefreshToken: (token: string) => set({ refreshToken: token }),
-  clearTokens: () => set({ accessToken: null, refreshToken: null }),
+  logout: () => set({ accessToken: undefined, refreshToken: undefined }),
 }));
