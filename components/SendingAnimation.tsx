@@ -5,8 +5,8 @@ import LoadingWhale from "@/assets/images/icons/loadingWhale.gif";
 import YellowCheck from "@/assets/images/icons/yellow_check.svg";
 import HeaderBar from "@/components/header_bar";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect, usePathname, useRouter } from "expo-router";
 
 /**
  * 전송중 컴포넌트
@@ -61,25 +61,35 @@ export const SendingAnimation = ({
 
   const [index, setIndex] = useState(0);
 
-  useEffect(() => {
-    if (index === 0) {
-      // 전송중 화면 3초 후 완료 화면으로 이동
-      const timer = setTimeout(() => {
-        setIndex(1);
-      }, 3000);
+  useFocusEffect(
+    useCallback(() => {
+      let timer: NodeJS.Timeout;
 
-      return () => clearTimeout(timer);
-    }
+      switch (index) {
+        case 0:
+          // 전송중 화면 2초 후 완료 화면으로 이동
 
-    if (index === 1) {
-      // 완료 화면 3초 후 홈 화면으로 이동
-      const timer = setTimeout(() => {
-        router.dismissAll(); // 네비게이션으로 /home 이동
-      }, 3000);
+          timer = setTimeout(() => {
+            setIndex(1);
+          }, 2000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [index]);
+          return () => {
+            clearTimeout(timer);
+          };
+        case 1:
+          // 완료 화면 3초 후 홈 화면으로 이동
+
+          timer = setTimeout(() => {
+            router.dismissAll(); // push 스택 다 지움
+            router.replace("/home"); // 홈으로
+          }, 3000);
+
+          return () => {
+            clearTimeout(timer);
+          };
+      }
+    }, [index])
+  );
 
   switch (index) {
     default:
