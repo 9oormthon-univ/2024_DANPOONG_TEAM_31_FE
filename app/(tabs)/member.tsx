@@ -1,16 +1,59 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Clipboard } from "react-native";
 import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/modules/api";
+import { useAuthStore } from "@/stores/authStore";
+
+// 가족 멤버 타입 정의
+interface FamilyMember {
+  userId: number;
+  nickname: string;
+  email: string;
+}
 
 export default function Member() {
-  // 임의 데이터
-  const myInfo = { name: "강민서", email: "rkdalstj@hanmail.net" };
-  const familyMembers = [
-    { id: 1, name: "가족1", email: "rkwhr1@gmail.com" },
-    { id: 2, name: "가족2", email: "rkwhr2@gmail.com" },
-    { id: 3, name: "가족3", email: "rkwhr3@gmail.com" },
-  ];
+  const accessToken = useAuthStore((state) => state.accessToken);
+  // 유저 정보
+  const { data: myInfo } = useQuery({
+    queryFn: () => api.get("/users/myInfo").then((res) => res.data),
+    queryKey: ["users/myInfo"],
+  });
+
+  // 가족 멤버 정보
+  const { data: familyMembers } = useQuery({
+    queryFn: () => api.get("/api/family/members").then((res) => res.data),
+    queryKey: ["family/members"],
+  });
+
+  const sendInvite = async () => {
+    try {
+      const response = await fetch("http://15.164.29.113:8080/api/family/invite", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`초대장 생성 실패: ${response.status}`);
+      }
+
+      const inviteLink = await response.text(); // API 응답으로 받은 초대 링크
+      console.log("Invite Link:", inviteLink);
+
+      // 클립보드에 복사
+      Clipboard.setString(inviteLink);
+
+      // 성공 알림
+      Alert.alert("초대장 생성 완료", "초대 링크가 클립보드에 복사되었습니다.");
+    } catch (error) {
+      console.error("초대장 생성 에러:", error);
+      Alert.alert("초대장 생성 실패", "다시 시도해주세요.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -19,24 +62,26 @@ export default function Member() {
       {/* 내 정보 */}
       <View style={styles.memberItem}>
         <View style={styles.profileCircle} />
-        <Text style={styles.name}>{myInfo.name}</Text>
+        <Text style={styles.name}>{myInfo?.nickname}</Text>
         <Text style={styles.separator}>|</Text>
-        <Text style={styles.email}>{myInfo.email}</Text>
+        <Text style={styles.email}>{myInfo?.email}</Text>
       </View>
       {/* 얇은 선 */}
       <View style={styles.divider} />
       {/* 가족 정보 */}
-      {familyMembers.map((member) => (
-        <View key={member.id} style={styles.memberItem}>
-          <View style={styles.profileCircle} />
-          <Text style={styles.name}>{member.name}</Text>
-          <Text style={styles.separator}>|</Text>
-          <Text style={styles.email}>{member.email}</Text>
-        </View>
-      ))}
+      {familyMembers?.members
+        ?.filter((member: FamilyMember) => member.userId !== myInfo?.userId) // 본인 제외
+        .map((member: FamilyMember) => (
+          <View key={member.userId} style={styles.memberItem}>
+            <View style={styles.profileCircle} />
+            <Text style={styles.name}>{member.nickname}</Text>
+            <Text style={styles.separator}>|</Text>
+            <Text style={styles.email}>{member.email}</Text>
+          </View>
+        ))}
 
       {/* 초대장 보내기 버튼 */}
-      <TouchableOpacity style={styles.inviteButton}>
+      <TouchableOpacity style={styles.inviteButton} onPress={sendInvite}>
         <Text style={styles.inviteButtonText}>초대장 보내기</Text>
       </TouchableOpacity>
 
@@ -66,7 +111,7 @@ const styles = StyleSheet.create({
   profileCircle: {
     width: 45,
     height: 45,
-    borderRadius: "50%",
+    borderRadius: 25,
     backgroundColor: colors.blue_lightgray_FF,
     marginRight: 20,
   },
