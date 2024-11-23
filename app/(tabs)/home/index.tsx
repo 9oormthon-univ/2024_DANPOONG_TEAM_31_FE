@@ -14,7 +14,7 @@ import HeaderBar from "@/components/header_bar";
 import colors from "@/constants/colors";
 import { BlurView } from "expo-blur";
 import { randomPosition } from "@/modules/randomPosition";
-import { useMemoStore } from "@/stores/memo";
+import { useMemoStore } from "@/stores/memoStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BouncingComponent from "@/components/BouncingComponent";
 import { useMemo } from "react";
@@ -109,7 +109,6 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <HeaderBar title="민정님, 안녕하세요" />
-
       <View style={styles.schrollviewContainer}>
         <ScrollView
           style={styles.cloudsScrollView}

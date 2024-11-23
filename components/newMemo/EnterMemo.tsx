@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useMemoStore } from "@/stores/memo";
+import { useMemoStore } from "@/stores/memoStore";
 import { useState } from "react";
 
 import ChevronRight from "@/assets/images/icons/black_chevron-right.svg";

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MoonIcon from "../assets/images/icons/moon.svg";
 import BellIcon from "../assets/images/icons/letterbox.svg";
 import SettingsIcon from "../assets/images/icons/settings.svg";
 import colors from "@/constants/colors";
 import { useRouter, usePathname } from "expo-router";
+import { useAppStore } from "@/stores/appStore";
 
 interface HeaderBarProps {
   title: string; // 부모로부터 전달받는 문구
@@ -19,6 +20,8 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
   const [isBellActive, setIsBellActive] = useState(false);
   const [isSettingsActive, setIsSettingsActive] = useState(false);
 
+  const { showSettingsOnLogin, setShowSettingsOnLogin } = useAppStore();
+
   useEffect(() => {
     // 현재 페이지가 설정 페이지라면 isSettingsActive를 true로 설정
     setIsSettingsActive(pathname === "/home/settings");
@@ -29,6 +32,10 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
     // 현재 경로가 설정 페이지라면 이전 페이지로 돌아감
     if (pathname === "/home/settings") {
       router.back();
+    } else if (pathname === "/login") {
+      // 로그인 페이지에서
+      setIsSettingsActive(!showSettingsOnLogin);
+      setShowSettingsOnLogin?.(!showSettingsOnLogin);
     } else {
       // 설정 페이지로 이동
       router.push("/home/settings");
@@ -63,9 +70,11 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
         <Text style={styles.title}>{title}</Text>
         <View style={styles.icons}>
           {/* Moon Icon */}
-          <TouchableOpacity style={[styles.icon, getIconStyle(isMoonActive)]}
-            onPress={() => setIsMoonActive((prev) => !prev)}>
-              <MoonIcon width={24} height={24} />
+          <TouchableOpacity
+            style={[styles.icon, getIconStyle(isMoonActive)]}
+            onPress={() => setIsMoonActive((prev) => !prev)}
+          >
+            <MoonIcon width={24} height={24} />
           </TouchableOpacity>
           {/* Bell Icon */}
           <TouchableOpacity
@@ -76,7 +85,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
           </TouchableOpacity>
           {/* Settings Icon */}
           <TouchableOpacity
-            style={[styles.icon, getIconStyle(isSettingsActive)]}
+            style={[styles.icon, getIconStyle(showSettingsOnLogin || isSettingsActive)]}
             onPress={handleSettingsPress}
           >
             <SettingsIcon width={24} height={24} />
@@ -92,7 +101,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoTitle: {
-    fontWeight: '200',
+    fontWeight: "200",
     fontSize: 20,
     color: colors.white,
     marginBottom: 15,

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import HeartWhale from "@/assets/images/icons/heart_whale.svg";
 import KakaoLogin from "@/assets/images/icons/kakao_login.svg";
@@ -9,6 +9,8 @@ import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
 
 import { login, isLogined } from "@react-native-kakao/user";
+import { SettingsPage } from "@/components/SettingsPage";
+import { useAppStore } from "@/stores/appStore";
 
 export default function Login() {
   const router = useRouter();
@@ -29,31 +31,40 @@ export default function Login() {
     }
   };
 
+  const { showSettingsOnLogin } = useAppStore();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* 배경 이미지 */}
       <BackgroundImg style={styles.background} />
-      <View style={styles.container}>
-        <HeaderBar title="안녕하세요! 환영해요." />
+      {showSettingsOnLogin ? (
+        <SettingsPage />
+      ) : (
+        <View style={styles.container}>
+          <HeaderBar title="안녕하세요! 환영해요." />
 
-        {/* 로고 */}
-        <View style={styles.logoContainer}>
-          <Ellipse width={75.09} height={32.29} style={styles.elllips}/>
-          <HeartWhale width={52.03} height={54.15} style={styles.heartWhale}/>
-          <Text style={styles.appName}>WithU</Text>
-        </View>
+          {/* 로고 */}
+          <View style={styles.logoContainer}>
+            <Ellipse width={75.09} height={32.29} style={styles.elllips} />
+            <HeartWhale width={52.03} height={54.15} style={styles.heartWhale} />
+            <Text style={styles.appName}>WithU</Text>
+          </View>
 
-        <View style={styles.loginHintContainer}>
-          <Text style={styles.loginHintText}>힘든 세상을 살아가고 있는 나의 소중한 사람들에게{"\n"}따듯한 말 한마디를 전해보는건 어떨까요?</Text>
-        </View>
+          <View style={styles.loginHintContainer}>
+            <Text style={styles.loginHintText}>
+              힘든 세상을 살아가고 있는 나의 소중한 사람들에게{"\n"}따듯한 말 한마디를 전해보는건
+              어떨까요?
+            </Text>
+          </View>
 
-        <View style={styles.loginContainer}>
-          {/* 카카오 로그인 버튼 */}
-          <TouchableOpacity style={styles.kakaoButton} onPress={() => initKakao()}>
-            <KakaoLogin width={300} height={70} />
-          </TouchableOpacity>
+          <View style={styles.loginContainer}>
+            {/* 카카오 로그인 버튼 */}
+            <TouchableOpacity style={styles.kakaoButton} onPress={() => initKakao()}>
+              <KakaoLogin width={300} height={70} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -83,7 +94,7 @@ const styles = StyleSheet.create({
   elllips: {
     position: "absolute",
     top: 30,
-  }, 
+  },
   heartWhale: {
     shadowColor: colors.white, // 흰색 그림자
     shadowOffset: { width: 0, height: 3 }, // 그림자 위치
