@@ -17,17 +17,19 @@ import { useRouter } from "expo-router";
 
 export const EnterMemo = () => {
   const router = useRouter();
-  const { type, setType, setMemo } = useMemoStore();
 
-  const setEmoji = (emojiName: string) => {
-    setMemo({ mood: emojiName, type: "message" });
-  };
+  const { type } = useMemoStore();
 
   const [input, setInput] = useState("");
 
-  const send = () => {
-    if (input.trim().length === 0) return alert("내용을 입력해주세요.");
-    setMemo({ message: input, type: undefined });
+  const send = ({ type, value }: { type: "emoji" | "message"; value?: string }): void => {
+    if (type === "emoji") {
+      // 기분 전송
+      console.log(value);
+    } else if (type === "message") {
+      // 메모 전송
+      console.log(input);
+    }
     router.push("/home/sending_memo");
   };
 
@@ -38,9 +40,6 @@ export const EnterMemo = () => {
           {type === "mood" && "지금 기분이 어떠세요?"}
           {type === "message" && "지금 고민을 이야기해주세요."}
         </Text>
-        <Pressable onPress={() => (type === "mood" ? setType("message") : undefined)}>
-          <ChevronRight style={{ marginRight: 16 }} />
-        </Pressable>
       </View>
 
       {type === "mood" && (
@@ -55,10 +54,13 @@ export const EnterMemo = () => {
             { emoji: "🫨", name: "놀람" },
           ].map((entry) => (
             <View key={entry.name} style={styles.emojiWrapper}>
-              <Pressable onPress={() => setEmoji(entry.name)}>
+              <Pressable onPress={() => send({ type: "emoji", value: entry.name })}>
                 <Text style={styles.emoji}>{entry.emoji}</Text>
               </Pressable>
-              <TouchableOpacity style={styles.emojiChip} onPress={() => setEmoji(entry.name)}>
+              <TouchableOpacity
+                style={styles.emojiChip}
+                onPress={() => send({ type: "emoji", value: entry.name })}
+              >
                 <Text style={styles.emojiChipLabel}>{entry.name}</Text>
               </TouchableOpacity>
             </View>
@@ -75,7 +77,7 @@ export const EnterMemo = () => {
             placeholder="작성해주세요."
             placeholderTextColor={colors.blue_gray_46}
           />
-          <TouchableOpacity style={styles.enterIcon} onPress={() => send()}>
+          <TouchableOpacity style={styles.enterIcon} onPress={() => send({ type: "message" })}>
             <DarkblueEnter />
           </TouchableOpacity>
         </View>
