@@ -22,10 +22,10 @@ export default function Schedule() {
   const [modalVisible, setModalVisible] = useState(false);
   // 임시 데이터
   const schedules = [
-      { id: 1, title: "일정명1", date: "24.11.19", registrant: "고래"},
-      { id: 2, title: "일정명2", date: "24.11.20", registrant: "상어"},
-      { id: 3, title: "일정명3", date: "24.12.01", registrant: "거북이"},
-      { id: 4, title: "일정명4", date: "24.12.10", registrant: "물고기"},
+    { id: 1, title: "일정명1", date: "24.11.19", registrant: "고래" },
+    { id: 2, title: "일정명2", date: "24.11.20", registrant: "상어" },
+    { id: 3, title: "일정명3", date: "24.12.01", registrant: "거북이" },
+    { id: 4, title: "일정명4", date: "24.12.10", registrant: "물고기" },
   ];
   const router = useRouter();
 
@@ -52,11 +52,7 @@ export default function Schedule() {
 
     // 오늘 날짜 (한국 시간 기준)
     const now = new Date();
-    const today = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-    ); // UTC 시간 제거 후 자정 기준 한국 시간
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // UTC 시간 제거 후 자정 기준 한국 시간
 
     // 날짜 차이 계산 (밀리초 단위 -> 일 단위)
     const diff = Math.ceil((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -98,14 +94,17 @@ export default function Schedule() {
             </View>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity style={styles.addButton} onPress={() => router.push("/schedule/add_schedule")}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.push("/schedule/add_schedule")}
+        >
           <PlusBtn width={52} height={52} />
         </TouchableOpacity>
       </ScrollView>
 
       <HeartWhale width={53} height={40.92} style={styles.heartWhale} />
 
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
+      <Modal visible={modalVisible} transparent={true} animationType="fade">
         <CheckSchedule
           schedule={selectedSchedule}
           onClose={closeModal}
@@ -177,9 +176,9 @@ const styles = StyleSheet.create({
     color: colors.red,
   },
   dDayText: {
-      fontSize: 11,
-      fontWeight: "700",
-      color: colors.blue_gray_46,
+    fontSize: 11,
+    fontWeight: "700",
+    color: colors.blue_gray_46,
   },
   addButton: {
     justifyContent: "center",
