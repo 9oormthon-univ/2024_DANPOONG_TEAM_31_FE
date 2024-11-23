@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { SafeAreaView, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import HeartWhale from "@/assets/images/icons/heart_whale.svg";
 import KakaoLogin from "@/assets/images/icons/kakao_login.svg";
+import Ellipse from "@/assets/images/icons/Ellipse.svg";
 import BackgroundImg from "@/assets/images/background.svg";
 import HeaderBar from "@/components/header_bar";
 import { useRouter } from "expo-router";
@@ -37,8 +38,13 @@ export default function Login() {
 
         {/* 로고 */}
         <View style={styles.logoContainer}>
-          <HeartWhale width={50} height={50} />
+          <Ellipse width={75.09} height={32.29} style={styles.elllips}/>
+          <HeartWhale width={52.03} height={54.15} style={styles.heartWhale}/>
           <Text style={styles.appName}>WithU</Text>
+        </View>
+
+        <View style={styles.loginHintContainer}>
+          <Text style={styles.loginHintText}>힘든 세상을 살아가고 있는 나의 소중한 사람들에게{"\n"}따듯한 말 한마디를 전해보는건 어떨까요?</Text>
         </View>
 
         <View style={styles.loginContainer}>
@@ -72,17 +78,28 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: "center",
-    marginTop: 230,
+    marginTop: 169,
+  },
+  elllips: {
+    position: "absolute",
+    top: 30,
+  }, 
+  heartWhale: {
+    shadowColor: colors.white, // 흰색 그림자
+    shadowOffset: { width: 0, height: 3 }, // 그림자 위치
+    shadowOpacity: 0.4, // 그림자 투명도
+    shadowRadius: 2, // 그림자 블러 크기
+    elevation: 5, // Android 그림자
   },
   appName: {
-    marginTop: 3,
-    fontSize: 20,
+    marginTop: 5.53,
+    fontSize: 35.88,
     fontWeight: "700",
     color: colors.white,
   },
   loginContainer: {
     position: "absolute",
-    bottom: 122,
+    bottom: 127,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -94,15 +111,12 @@ const styles = StyleSheet.create({
   loginHintContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 42.09,
   },
   loginHintText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "400",
     color: colors.white,
-  },
-  loginLink: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.yellow,
+    textAlign: "center",
   },
 });

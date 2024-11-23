@@ -1,0 +1,21 @@
+<svg width="57" height="37" viewBox="0 0 57 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1707481910">
+<g id="Union" filter="url(#filter0_d_816_10611)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M41.0936 25.1736C38.1811 28.7251 33.7001 31 28.6744 31C23.6099 31 19.0987 28.6899 16.1881 25.0913C15.2233 25.3889 14.1959 25.5495 13.1301 25.5495C7.5354 25.5495 3 21.1264 3 15.6703C3 10.2142 7.5354 5.79121 13.1301 5.79121C14.116 5.79121 15.0689 5.92856 15.97 6.18469C18.8704 2.42862 23.4816 0 28.6744 0C33.8313 0 38.4146 2.39518 41.3184 6.10704C42.1335 5.90078 42.9886 5.79102 43.8699 5.79102C49.4646 5.79102 54 10.214 54 15.6701C54 21.1262 49.4646 25.5493 43.8699 25.5493C42.9072 25.5493 41.9758 25.4183 41.0936 25.1736Z" fill="white"/>
+</g>
+<path id="Vector" d="M26.9075 15.3999C26.9892 13.7451 26.4204 12.3735 25.637 12.3363C24.8536 12.2991 24.1524 13.6105 24.0707 15.2654C23.9891 16.9202 24.5579 18.2918 25.3413 18.329C26.1246 18.3662 26.8259 17.0548 26.9075 15.3999Z" fill="#151E46"/>
+<path id="Vector_2" d="M32.9824 15.7623C33.1508 14.1141 32.6546 12.7157 31.8741 12.6391C31.0936 12.5624 30.3244 13.8365 30.156 15.4848C29.9876 17.133 30.4838 18.5314 31.2643 18.608C32.0448 18.6847 32.814 17.4106 32.9824 15.7623Z" fill="#151E46"/>
+</g>
+<defs>
+<filter id="filter0_d_816_10611" x="0.435898" y="0" width="56.1282" height="36.1282" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2.5641"/>
+<feGaussianBlur stdDeviation="1.28205"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_816_10611"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_816_10611" result="shape"/>
+</filter>
+</defs>
+</svg>
