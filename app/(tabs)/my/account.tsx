@@ -3,31 +3,56 @@ import HeaderBar from "@/components/header_bar";
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import colors from "@/constants/colors";
 import { useRouter } from "expo-router";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import LeftArrow from "@/assets/images/icons/left_arrow.svg";
 import RightArrow from "@/assets/images/icons/right_arrow.svg";
 import HeartWhaleWithShadow from "@/assets/images/icons/heart_whale_w_shadow.svg";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/modules/api";
 
 export default function Account() {
   const router = useRouter();
-  const tabBarHeight = useBottomTabBarHeight();
+  const queryClient = useQueryClient();
+
+  // 유저 정보
+  const { data: myInfo } = useQuery({
+    queryFn: () => api.get("/users/myInfo").then((res) => res.data),
+    queryKey: ["/users/myInfo"],
+  });
 
   const [modalVisible, setModalVisible] = useState(false);
   const [currentField, setCurrentField] = useState<"nickname" | "birthdate" | null>(null);
-  const [nickname, setNickname] = useState("민서");
-  const [birthdate, setBirthdate] = useState("2003년 10월 23일");
+  const [nickname, setNickname] = useState(myInfo?.nickname);
+  const [birthdate, setBirthdate] = useState(myInfo?.birthday);
   const [inputValue, setInputValue] = useState("");
 
   const handleOpenModal = (field: "nickname" | "birthdate") => {
     setCurrentField(field);
-    setInputValue(field === "nickname" ? nickname : birthdate);
+    setInputValue("");
     setModalVisible(true);
   };
 
+  //닉네임 수정
+  const { mutate: editNickname } = useMutation({
+    mutationFn: () =>
+      api.put("/mypage/nickname", undefined, { params: { newNickname: inputValue } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/users/myInfo"] });
+    },
+  });
+
+  //생년월일 변경
+  const { mutate: editBirthdate } = useMutation({
+    mutationFn: () =>
+      api.put("/mypage/birthdate", undefined, { params: { birthdate: inputValue } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/users/myInfo"] });
+    },
+  });
+
   const handleSave = () => {
-    if (currentField === "nickname") setNickname(inputValue);
-    if (currentField === "birthdate") setBirthdate(inputValue);
+    if (currentField === "nickname") editNickname();
+    if (currentField === "birthdate") editBirthdate();
     setModalVisible(false);
   };
 
@@ -42,8 +67,16 @@ export default function Account() {
         <View style={{ width: 8 }}></View>
       </View>
       <View style={styles.content}>
-        <Row name="닉네임 변경" value={nickname} action={() => handleOpenModal("nickname")} />
-        <Row name="생년월일 변경" value={birthdate} action={() => handleOpenModal("birthdate")} />
+        <Row
+          name="닉네임 변경"
+          value={myInfo?.nickname}
+          action={() => handleOpenModal("nickname")}
+        />
+        <Row
+          name="생년월일 변경"
+          value={myInfo?.birthday || "없음"}
+          action={() => handleOpenModal("birthdate")}
+        />
         <Pressable>
           <Row name="로그아웃" />
         </Pressable>
@@ -76,9 +109,7 @@ export default function Account() {
               style={styles.modalInput}
               value={inputValue}
               onChangeText={setInputValue}
-              placeholder={
-                currentField === "nickname" ? "새 닉네임 입력" : "새 생년월일 입력"
-              }
+              placeholder={currentField === "nickname" ? "새 닉네임 입력" : "새 생년월일 입력"}
             />
             <View style={styles.modalActions}>
               <Pressable style={styles.modalButton} onPress={() => setModalVisible(false)}>
