@@ -23,9 +23,24 @@ export default function Member() {
 
   // 가족 멤버 정보
   const { data: familyMembers } = useQuery({
-    queryFn: () => api.get("/api/family/members").then((res) => res.data),
+    queryFn: () =>
+      Promise.resolve({
+        members: [
+          {
+            userId: 2,
+            nickname: "서현은",
+            email: "hyuneunseo@gmail.com",
+          },
+          {
+            userId: 3,
+            nickname: "허윤호",
+            email: "yoonho0518@kakao.com",
+          },
+        ],
+      }),
     queryKey: ["family/members"],
   });
+  
 
   const sendInvite = async () => {
     try {
