@@ -21,14 +21,15 @@ import { useMemo } from "react";
 
 // import Cloud from "@/assets/images/icons/cloud.svg";
 import Cloud from "@/assets/images/icons/small_cloud.svg";
-// import SpeechBubble from "@/assets/images/icons/speech_bubble_default.svg";
-import Triangle from "@/assets/images/icons/triangle.svg";
+import SpeechBubble from "@/assets/images/icons/speech_bubble_default.svg";
+// import Triangle from "@/assets/images/icons/triangle.svg";
 import Heart from "@/assets/images/icons/small_fill_heart.svg";
 import DarkBlueBubble from "@/assets/images/icons/darkblue_speech_bubble.svg";
 import CloudLetter from "@/assets/images/icons/Cloud_letters_big.svg";
 import Whale from "@/assets/images/icons/mainWhale.svg";
 import SpeechBubbleWithMail from "@/assets/images/icons/speech_bubble_w_mail.svg";
 import X from "@/assets/images/icons/x_light.svg";
+import Devide from "@/assets/images/icons/devide.svg";
 import AudioMessage from "@/components/audio_message";
 import ImgTextMessage from "@/components/imgtext_message";
 import TextMessage from "@/components/text_message";
@@ -62,53 +63,66 @@ export default function Home() {
   }, []);
 
   // 각 구름의 상태를 객체로 저장
-  const bubbles = Array.from({ length: 8 }, (_, i) => ({
-    id: i,
-    width: useRef(new Animated.Value(28)).current, // 초기 너비
-    height: useRef(new Animated.Value(19)).current, // 초기 높이
-    position: useRef(new Animated.ValueXY({ x: 0, y: 0 })).current, // 초기 위치
-    opacity: useRef(new Animated.Value(1)).current, // DarkBlueBubble 투명도
-  }));
+  const bubbles = useRef(
+    Array.from({ length: 8 }, () => ({
+      opacitySpeech: new Animated.Value(1), // SpeechBubble 투명도
+      opacityText: new Animated.Value(0), // textSpeechBubble 투명도
+      translateYText: new Animated.Value(-10), // textSpeechBubble의 Y 위치 (고정)
+    }))
+  ).current;
 
   const handleCloudPress = (id: number) => {
-    const isSelected = selectedCloud === id; // 현재 선택된 구름인지 확인
-    setSelectedCloud(isSelected ? null : id); // 같은 구름을 누르면 해제
-
-    Animated.parallel([
-      // 크기 애니메이션
-      Animated.timing(bubbles[id].width, {
-        toValue: isSelected ? 28 : 51, // 원래 크기로 돌아가기 or 커지기
+    setSelectedCloud(id);
+  
+    Animated.sequence([
+      // SpeechBubble 사라짐
+      Animated.timing(bubbles[id].opacitySpeech, {
+        toValue: 0, // SpeechBubble 사라짐
         duration: 300,
-        useNativeDriver: false,
+        useNativeDriver: true, // opacity는 네이티브에서 처리 가능
       }),
-      Animated.timing(bubbles[id].height, {
-        toValue: isSelected ? 19 : 35,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      // 위치 애니메이션
-      Animated.timing(bubbles[id].position.x, {
-        toValue: isSelected ? 0 : -24, // X축 이동값
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.timing(bubbles[id].position.y, {
-        toValue: isSelected ? 0 : -15, // Y축 이동값
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      // DarkBlueBubble 투명도 애니메이션
-      Animated.timing(bubbles[id].opacity, {
-        toValue: isSelected ? 1 : 0, // 원래 상태로 돌아가기 or 사라지기
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
+      // textSpeechBubble 나타남
+      Animated.parallel([
+        Animated.timing(bubbles[id].opacityText, {
+          toValue: 1, // textSpeechBubble 나타남
+          duration: 300,
+          useNativeDriver: true, // opacity는 네이티브에서 처리 가능
+        }),
+        Animated.timing(bubbles[id].translateYText, {
+          toValue: 0, // Y 위치 고정 (위 → 원래 위치)
+          duration: 300,
+          useNativeDriver: true, // translateY는 네이티브에서 처리 가능
+        }),
+      ]),
+      // 3초 대기
+      Animated.delay(3000),
+      // textSpeechBubble 사라지고 SpeechBubble 다시 나타남
+      Animated.parallel([
+        Animated.timing(bubbles[id].opacityText, {
+          toValue: 0, // textSpeechBubble 사라짐
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bubbles[id].translateYText, {
+          toValue: -20, // 다시 위로 이동
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bubbles[id].opacitySpeech, {
+          toValue: 1, // SpeechBubble 다시 나타남
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start(() => {
+      setSelectedCloud(null); // 상태 초기화
+    });
+  };  
 
   return (
     <View style={styles.container}>
       <HeaderBar title="민정님, 안녕하세요" />
+      {/* <View style={styles.separator}></View> */}
       <View style={styles.schrollviewContainer}>
         <ScrollView
           style={styles.cloudsScrollView}
@@ -116,46 +130,38 @@ export default function Home() {
           horizontal // 가로 스크롤 활성화
           showsHorizontalScrollIndicator={false} // 스크롤바 숨기기
         >
-          {bubbles.map((bubble) => (
+          {bubbles.map((bubble, index) => (
             <TouchableOpacity
-              key={bubble.id}
+              key={index}
               style={styles.cloud}
-              onPress={() => handleCloudPress(bubble.id)} // 클릭 이벤트 처리
+              onPress={() => handleCloudPress(index)}
             >
               <View style={styles.cloudContainer}>
                 <Cloud width={51} height={31} style={styles.cloudImg} />
                 <View style={styles.speechBubbleContainer}>
-                  {/* Speech Bubble 크기 애니메이션 */}
+                  {/* SpeechBubble */}
                   <Animated.View
                     style={[
-                      styles.speechBubble,
-                      {
-                        width: bubble.width,
-                        height: bubble.height,
-                        transform: [
-                          { translateX: bubble.position.x },
-                          { translateY: bubble.position.y },
-                        ],
-                      },
+                      { opacity: bubble.opacitySpeech },
                     ]}
-                  />
-                  <Triangle width={6} height={8} style={styles.triangle} />
-                  <Animated.View style={{ opacity: bubble.opacity }}>
-                    <DarkBlueBubble width={12} height={12} style={styles.speechBubbleImg} />
+                  >
+                    <SpeechBubble width={28} height={23} style={styles.speechBubble} />
+                    <DarkBlueBubble width={12} height={12} style={styles.DarkBlueBubble}/>
                   </Animated.View>
-                  <Animated.Text
+                  {/* textSpeechBubble */}
+                  <Animated.View
                     style={[
-                      styles.speechBubbleText,
+                      styles.textSpeechBubble,
                       {
-                        opacity: bubble.opacity.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [1, 0], // DarkBlueBubble이 사라지면 텍스트가 나타남
-                        }),
+                        opacity: bubble.opacityText, // 투명도
+                        transform: [{ translateY: bubble.translateYText }], // 위에서 아래로 이동
                       },
                     ]}
                   >
-                    내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.내용입니다.
-                  </Animated.Text>
+                    <Text style={styles.speechBubbleText}>
+                      내용입니다.내용입니다.내용입니다.
+                    </Text>
+                  </Animated.View>
                 </View>
               </View>
               <Text style={styles.cloudName}>이름이</Text>
@@ -163,7 +169,7 @@ export default function Home() {
           ))}
         </ScrollView>
       </View>
-      <View style={styles.separator}></View>
+      <Devide style={styles.Devide}/>
       <View style={styles.cloudsBoundary}>{CloudLetters}</View>
       <View style={{ position: "absolute", bottom: insets.bottom + 34 + 115.93, left: 155 }}>
         <SpeechBubbleWithMail style={{ position: "absolute", top: -44, right: -11 }} />
@@ -200,9 +206,10 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
   },
   schrollviewContainer: {
-    height: "13%",
+    height: "18%",
   },
   cloudsScrollView: {
     width: "88%",
@@ -234,31 +241,38 @@ const styles = StyleSheet.create({
   },
   speechBubble: {
     position: "absolute",
-    backgroundColor: colors.white,
-    width: 28,
-    height: 19,
-    borderRadius: 10,
+    top: 5,
   },
-  triangle: {
+  DarkBlueBubble: {
     position: "absolute",
-    left: 3.39,
-    top: 15,
+    top: 7,
+    left: 8,
   },
   speechBubbleImg: {
     position: "absolute",
     left: 8,
     top: 4,
   },
+  textSpeechBubble: {
+    position: "absolute",
+    width: 85,
+    height: 70,
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    top: 45,
+    left: -38.5,
+  },
   speechBubbleText: {
     position: "absolute",
-    width: 45,
-    height: 25,
+    width: 65,
+    height: 45,
     fontWeight: "500",
     color: colors.black,
     textAlign: "center",
-    fontSize: 6,
-    top: -10,
-    left: -21,
+    fontSize: 10,
+    top: 12,
+    left: 10,
+    // backgroundColor: colors.light_yellow,
   },
   cloudName: {
     alignSelf: "center",
@@ -266,13 +280,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "500",
     marginTop: 2,
+    zIndex: -5,
   },
-  separator: {
-    marginTop: 11,
-    marginHorizontal: 20,
-    height: 1,
-    backgroundColor: colors.grayA78,
+  Devide: {
+    alignSelf: "center",
+    position: "absolute",
+    top: 195,
+    zIndex: -5,
   },
+  // separator: {
+  //   marginTop: 23,
+  //   marginHorizontal: 20,
+  //   height: 10,
+  //   backgroundColor: colors.grayA78,
+  // },
   cloudsBoundary: {
     flex: 1,
     position: "relative",

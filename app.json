@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "WithU",
-    "slug": "WithU",
+    "slug": "withu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -33,7 +33,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.RECORD_AUDIO", "android.permission.MODIFY_AUDIO_SETTINGS"]
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -48,7 +51,9 @@
         "expo-build-properties",
         {
           "android": {
-            "extraMavenRepos": ["https://devrepo.kakao.com/nexus/content/groups/public/"],
+            "extraMavenRepos": [
+              "https://devrepo.kakao.com/nexus/content/groups/public/"
+            ],
             "minSdkVerson": 26,
             "newArchEnabled": true
           },
@@ -81,8 +86,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "8004cfc5-eb52-4bef-a649-88aa4a90df0a"
+        "projectId": "e9352e1b-7002-4586-a6dd-e06e1335902b"
       }
-    }
+    },
+    "owner": "eazzzzzzy"
   }
 }
