@@ -9,11 +9,14 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import EditBtn from "@/assets/images/icons/edit_btn.svg";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
 import HeaderBar from "@/components/header_bar";
+import { useAuthStore } from "@/stores/authStore";
+import { api } from "@/modules/api";
 
 export default function AddSchedule() {
     const router = useRouter();
@@ -21,6 +24,8 @@ export default function AddSchedule() {
   const [date, setDate] = useState(""); // 날짜 입력값
   const [memo, setMemo] = useState(""); // 메모 입력값
   const [status, setStatus] = useState("작성전"); // 상태 텍스트 관리
+
+  const accessToken = useAuthStore((state) => state.accessToken);
 
   // `title` 상태에 따라 status 업데이트
   useEffect(() => {
@@ -32,6 +37,53 @@ export default function AddSchedule() {
       setStatus("작성완료");
     }
   }, [title]);
+
+  // 날짜 형식 변환 함수
+  const formatDate = (inputDate: string) => {
+    const dateParts = inputDate.split(".");
+    if (dateParts.length === 3) {
+      const [year, month, day] = dateParts;
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+    return inputDate; // 형식이 올바르지 않으면 원본 그대로 반환
+  };
+
+  const addSchedule = async () => {
+    if (!accessToken) {
+      Alert.alert("Error", "로그인이 필요합니다.");
+      return;
+    }
+
+    if (!title || !date) {
+      Alert.alert("Error", "일정명과 날짜를 입력해주세요.");
+      return;
+    }
+
+    const formattedDate = formatDate(date);
+
+    try {
+      const response = await api.post(
+        "/api/schedule/add",
+        null, // POST 요청의 경우, 요청 바디는 필요 없으므로 null로 설정
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            title,
+            memo,
+            date: formattedDate,
+          },
+        }
+      );
+
+      console.log("일정 추가 성공:", response.data);
+      router.push("/schedule/sending_schedule"); // 일정 목록 페이지로 이동
+    } catch (error) {
+      console.error("일정 추가 실패:", error);
+      Alert.alert("Error", "일정 추가 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -84,7 +136,7 @@ export default function AddSchedule() {
 
             {/* 완료 버튼 */}
             <TouchableOpacity style={styles.completeButton} 
-            onPress={() => router.push("/schedule/sending_schedule")}
+            onPress={addSchedule}
             >
               <Text style={styles.completeButtonText}>완료</Text>
             </TouchableOpacity>
