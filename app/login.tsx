@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import HeartWhale from "@/assets/images/icons/heart_whale.svg";
 import KakaoLogin from "@/assets/images/icons/kakao_login.svg";
@@ -8,15 +8,32 @@ import HeaderBar from "@/components/header_bar";
 import { useRouter } from "expo-router";
 import colors from "@/constants/colors";
 
+import { login, isLogined } from "@react-native-kakao/user";
+
 export default function Login() {
   const router = useRouter();
+
+  const initKakao = async () => {
+    if (await isLogined()) {
+      console.log("logged in");
+    } else {
+      login({
+        web: {
+          redirectUri: "http://15.164.29.113:8080/login/oauth2/code/kakao",
+        },
+      })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((e) => console.log(e));
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* 배경 이미지 */}
       <BackgroundImg style={styles.background} />
       <View style={styles.container}>
-
         <HeaderBar title="안녕하세요! 환영해요." />
 
         {/* 로고 */}
@@ -32,8 +49,8 @@ export default function Login() {
 
         <View style={styles.loginContainer}>
           {/* 카카오 로그인 버튼 */}
-          <TouchableOpacity style={styles.kakaoButton} onPress={() => router.push("/KakaoLoginScreen")}>
-            <KakaoLogin width={256} height={57} />
+          <TouchableOpacity style={styles.kakaoButton} onPress={() => initKakao()}>
+            <KakaoLogin width={300} height={70} />
           </TouchableOpacity>
         </View>
       </View>
@@ -84,7 +101,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 127,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   kakaoButton: {
     alignItems: "center",

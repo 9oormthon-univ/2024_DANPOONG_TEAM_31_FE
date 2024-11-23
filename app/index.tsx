@@ -2,8 +2,14 @@ import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import { initializeKakaoSDK } from "@react-native-kakao/core";
+
 export default function Index() {
   const router = useRouter();
+
+  useEffect(() => {
+    initializeKakaoSDK("d6f138e3695774e7f06cfb1c569b29c9");
+  }, []);
 
   return (
     <View
