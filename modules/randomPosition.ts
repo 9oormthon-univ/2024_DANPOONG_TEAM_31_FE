@@ -5,7 +5,7 @@ type Position = { top: number; left: number };
 const existingPositions: Position[] = [];
 
 export function randomPosition(
-  componentSize: number = 65,
+  componentSize: number = 120,
   topLimit: [number, number] = [0, 300],
   leftLimit: [number, number] = [0, Dimensions.get("screen").width - 20 * 2 * 2]
 ): Position {

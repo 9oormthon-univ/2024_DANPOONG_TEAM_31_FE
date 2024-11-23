@@ -93,7 +93,7 @@ export default function Home() {
 
   const handleCloudPress = (id: number) => {
     setSelectedCloud(id);
-  
+
     Animated.sequence([
       // SpeechBubble 사라짐
       Animated.timing(bubbles[id].opacitySpeech, {
@@ -137,13 +137,11 @@ export default function Home() {
     ]).start(() => {
       setSelectedCloud(null); // 상태 초기화
     });
-  };  
+  };
 
   return (
     <View style={styles.container}>
-      <HeaderBar
-      title={`${myInfo?.nickname ?? "사용자"}님, 안녕하세요`}
-    />
+      <HeaderBar title={`${myInfo?.nickname ?? "사용자"}님, 안녕하세요`} />
       {/* <View style={styles.separator}></View> */}
       <View style={styles.schrollviewContainer}>
         <ScrollView
@@ -162,13 +160,9 @@ export default function Home() {
                 <Cloud width={51} height={31} style={styles.cloudImg} />
                 <View style={styles.speechBubbleContainer}>
                   {/* SpeechBubble */}
-                  <Animated.View
-                    style={[
-                      { opacity: bubble.opacitySpeech },
-                    ]}
-                  >
+                  <Animated.View style={[{ opacity: bubble.opacitySpeech }]}>
                     <SpeechBubble width={28} height={23} style={styles.speechBubble} />
-                    <DarkBlueBubble width={12} height={12} style={styles.DarkBlueBubble}/>
+                    <DarkBlueBubble width={12} height={12} style={styles.DarkBlueBubble} />
                   </Animated.View>
                   {/* textSpeechBubble */}
                   <Animated.View
@@ -191,7 +185,7 @@ export default function Home() {
           ))}
         </ScrollView>
       </View>
-      <Devide style={styles.Devide}/>
+      <Devide style={styles.Devide} />
       <View style={styles.cloudsBoundary}>{CloudLetters}</View>
       <View style={{ position: "absolute", bottom: insets.bottom + 34 + 115.93, left: 155 }}>
         <SpeechBubbleWithMail style={{ position: "absolute", top: -44, right: -11 }} />
